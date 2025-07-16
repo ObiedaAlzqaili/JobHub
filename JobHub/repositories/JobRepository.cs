@@ -1,6 +1,8 @@
-﻿namespace JobHub.repositories
+﻿using JobHub.Interfaces.RepositoriesInterfaces;
+
+namespace JobHub.repositories
 {
-    public class JobRepository
+    public class JobRepository : IJobRepository
     {
     }
 }

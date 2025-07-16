@@ -5,15 +5,9 @@
         public string? Headline { get; set; }
         public string? SkillsSummary { get; set; }
 
-        public string? Location { get; set; }
+        public string? Gender { get; set; }
 
-        public string? PhoneNumber { get; set; }
-
-        public string Gender { get; set; }
-
-
-
-        public string? AiAnalysis { get; set; }
+        public string? AiKeyWords { get; set; }
 
         public Resume? Resumes { get; set; }
         public ICollection<Education>? EducationList { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace JobHub.DTOs.UserAccount
+﻿using JobHub.Models;
+
+namespace JobHub.DTOs.UserAccount
 {
     public class UserDataDto
     {
@@ -27,6 +29,7 @@
 
         public List<EducationDto> Education { get; set; } = new List<EducationDto>();
         public List<SkillDto> Skills { get; set; } = new List<SkillDto>();
+        public List<LanguageDto> Languages { get; set; }
 
         public string ResumeBase64 { get; set; }
         public string ResumeType { get; set; }

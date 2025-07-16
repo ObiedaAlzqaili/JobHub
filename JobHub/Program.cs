@@ -1,6 +1,9 @@
 using JobHub.Data;
+using JobHub.Interfaces.RepositoriesInterfaces;
+using JobHub.repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.SemanticKernel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,20 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+var key = builder.Configuration["OpenAi:key"];
+
+
+
+builder.Services.AddScoped<IProfileReposotity, ProfileRepository>();
+
+builder.Services.AddSingleton<Kernel>(sp =>
+{
+    var kernelBuilder = Kernel.CreateBuilder();
+    kernelBuilder.AddOpenAIChatCompletion("gpt-4", key);
+    return kernelBuilder.Build();
+});
+
 
 var app = builder.Build();
 
