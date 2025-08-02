@@ -1,4 +1,6 @@
-﻿namespace JobHub.Models
+﻿using Microsoft.AspNetCore.Builder;
+
+namespace JobHub.Models
 {
     public class EndUser : Person
     {
@@ -13,11 +15,10 @@
         public ICollection<Education>? EducationList { get; set; }
         public ICollection<Experience>? ExperienceList { get; set; }
         public ICollection<Skill>? Skills { get; set; }
-        public ICollection<MatchResult>? MatchResults { get; set; }
 
         public ICollection<Language>? Languages { get; set; }
 
         //Jobs User Applied For
-        public ICollection<JobPost>? JobPosts { get; set; }
+        public ICollection<JobApplication> JobApplications { get; set; }
     }
 }

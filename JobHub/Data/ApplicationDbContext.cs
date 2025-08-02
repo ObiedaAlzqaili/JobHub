@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobHub.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Person>
     {
         public DbSet<SkillLevel> SkillLevels { get; set; }
         public DbSet<Skill> Skills { get; set; } // Assuming you have a Skill model defined
@@ -15,7 +15,8 @@ namespace JobHub.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<JobPost> JobPosts { get; set; }
         public DbSet<Language> Languages { get; set; }
-      
+
+        public DbSet<JobApplication> JobApplications { get; set; }
 
         public DbSet<Resume> Resumes { get; set; }
 
@@ -28,13 +29,26 @@ namespace JobHub.Data
         {
             base.OnModelCreating(modelBuilder);
 
-          
-
             modelBuilder.Entity<SkillLevel>().HasData(
                 new SkillLevel { Id = 1, Level = "Beginner" },
                 new SkillLevel { Id = 2, Level = "Intermediate" },
                 new SkillLevel { Id = 3, Level = "Expert" }
             );
+
+
+            
+            modelBuilder.Entity<JobApplication>()
+            .HasKey(ja => new { ja.EndUserId, ja.JobPostId }); 
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(ja => ja.EndUser)
+                .WithMany(eu => eu.JobApplications)
+                .HasForeignKey(ja => ja.EndUserId);
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(ja => ja.JobPost)
+                .WithMany(jp => jp.JobApplications)
+                .HasForeignKey(ja => ja.JobPostId);
         }
     }
 }

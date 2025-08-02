@@ -21,12 +21,13 @@ namespace JobHub.Controllers
             _logger = logger;
             _repo = repo;
         }
-        [Authorize]
+       
         public IActionResult Index()
         {
 
             return View();
         }
+        
 
         [HttpGet]
         public IActionResult CreateEndUserAccount()

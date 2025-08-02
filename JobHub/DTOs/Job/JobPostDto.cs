@@ -1,4 +1,4 @@
-﻿namespace JobHub.DTOs
+﻿namespace JobHub.DTOs.Job
 {
     public class JobPostDto
     {
@@ -10,6 +10,8 @@
         public string ImageCompanyBase64 { get; set; }
         public string ImageCompanyType { get; set; }
         public string ImageCompanyName { get; set; }
+
+        public string Location { get; set; }
         public DateTime PostedAt { get; set; }
         public string CompanyName { get; set; }
     }

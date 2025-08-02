@@ -1,4 +1,6 @@
-﻿namespace JobHub.DTOs
+﻿using JobHub.DTOs.Job;
+
+namespace JobHub.DTOs
 {
     public class UserProfileDto
     {

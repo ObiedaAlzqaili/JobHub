@@ -10,41 +10,109 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">JobHub</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-briefcase"></i>
+                JobHub
+            </a>
+            <nav class="nav-links">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a href="#">Find Jobs</a>
+                <a href="#">Career Resources</a>
+                <a href="#">For Employers</a>
+            </nav>
+            <partial name="_LoginPartial" />
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+            @RenderBody()
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>JobHub</h3>
+                    <p>Your AI-powered job search partner. Find better matches, faster.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h3>For Job Seekers</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Browse Jobs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Career Resources</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> CV Builder</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Job Alerts</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Salary Calculator</a></li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                </div>
+
+                <div class="footer-column">
+                    <h3>For Employers</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Post a Job</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Search Resumes</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Recruiting Solutions</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing Plans</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Employer Resources</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Career Street, San Francisco</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> support@jobhub.com</li>
+                        <li><i class="fas fa-headset"></i> 24/7 Support Center</li>
+                    </ul>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - JobHub - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="copyright">
+                <p>&copy; 2023 JobHub. All rights reserved. Designed with ❤️ for job seekers worldwide.</p>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        // Simple animation for the step numbers
+        document.addEventListener('DOMContentLoaded', function() {
+            const stepNumbers = document.querySelectorAll('.step-number');
+
+            stepNumbers.forEach((number, index) => {
+                // Add animation delay based on position
+                number.style.animationDelay = `${index * 0.2}s`;
+            });
+
+            // Mobile menu toggle
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const navButtons = document.querySelector('.nav-buttons');
+
+            menuBtn.addEventListener('click', function() {
+                navButtons.style.display = navButtons.style.display === 'flex' ? 'none' : 'flex';
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = '70px';
+                navButtons.style.right = '20px';
+                navButtons.style.backgroundColor = 'var(--white)';
+                navButtons.style.padding = '20px';
+                navButtons.style.borderRadius = '12px';
+                navButtons.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+                navButtons.style.gap = '15px';
+                navButtons.style.width = '200px';
+            });
+        });
+    </script>
 </body>
 </html>

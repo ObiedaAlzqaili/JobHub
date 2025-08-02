@@ -11,7 +11,6 @@
         public string UserId { get; set; }
         public EndUser? User { get; set; }
 
-        public ICollection<MatchResult>? MatchResults { get; set; }
     }
 
 }
