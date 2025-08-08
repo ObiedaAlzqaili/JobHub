@@ -40,10 +40,11 @@ namespace JobHub.Controllers
         {
             if (ModelState.IsValid)
             {
-                _jobRepository.CreateJobApplicationAsync(jobApplication);
+                _jobRepository.CreateJobApplication(jobApplication);
                 return RedirectToAction("Index", "Home");
             }
             return View(jobApplication);
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using JobHub.Data;
 using JobHub.DTOs.Job;
 using JobHub.Interfaces.RepositoriesInterfaces;
+using JobHub.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,25 @@ namespace JobHub.repositories
 
         public Task<bool> CreateJobApplication(JobApplicationDto application)
         {
-            throw new NotImplementedException();
+            if (application == null)
+            {
+                throw new ArgumentNullException(nameof(application), "Application cannot be null");
+            }
+            var jobApplication = new JobApplication
+            {
+                JobPostId = application.JobPostId,
+                Name = application.ApplicantName,
+                Email = application.ApplicantEmail,
+                PhoneNumber = application.PhoneNumber,
+                ResumeBase64 = application.ResumeBase64,
+                ResumeName = application.ResumeFileName,
+                ResumeType = application.ResumeFileType,
+                EndUserId = application.EndUserId, 
+                AppliedOn = DateTime.UtcNow,
+                Status = "Pending"
+            };
+            _context.JobApplications.Add(jobApplication);
+            return _context.SaveChangesAsync().ContinueWith(t => t.Result > 0);
         }
 
         public async Task<IEnumerable<JobPostSearchDto>> GetAllJobsAsync()

@@ -15,7 +15,5 @@ namespace JobHub.Interfaces.RepositoriesInterfaces
 
         public Task<bool> CreateJobApplication(JobApplicationDto application);
 
-
-
     }
 }
