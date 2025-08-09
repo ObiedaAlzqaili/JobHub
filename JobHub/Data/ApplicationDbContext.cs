@@ -6,9 +6,9 @@ namespace JobHub.Data
 {
     public class ApplicationDbContext : IdentityDbContext<Person>
     {
-        public DbSet<SkillLevel> SkillLevels { get; set; }
-        public DbSet<Skill> Skills { get; set; } // Assuming you have a Skill model defined
-        public DbSet<EndUser> EndUsers { get; set; } // Assuming you have an EndUser model defined
+      
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<EndUser> EndUsers { get; set; }
 
         public DbSet<Education> Educations { get; set; }
         public DbSet<Experience> Experiences { get; set; }
@@ -29,11 +29,7 @@ namespace JobHub.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<SkillLevel>().HasData(
-                new SkillLevel { Id = 1, Level = "Beginner" },
-                new SkillLevel { Id = 2, Level = "Intermediate" },
-                new SkillLevel { Id = 3, Level = "Expert" }
-            );
+        
 
 
             
@@ -43,12 +39,14 @@ namespace JobHub.Data
             modelBuilder.Entity<JobApplication>()
                 .HasOne(ja => ja.EndUser)
                 .WithMany(eu => eu.JobApplications)
-                .HasForeignKey(ja => ja.EndUserId);
+                .HasForeignKey(ja => ja.EndUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<JobApplication>()
                 .HasOne(ja => ja.JobPost)
                 .WithMany(jp => jp.JobApplications)
-                .HasForeignKey(ja => ja.JobPostId);
+                .HasForeignKey(ja => ja.JobPostId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

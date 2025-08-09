@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/JobHub.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -17,9 +18,9 @@
             </a>
             <nav class="nav-links">
                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                <a href="#">Find Jobs</a>
-                <a href="#">Career Resources</a>
-                <a href="#">For Employers</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Job" asp-action="Index">Jobs</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Ai" asp-action="Index">Ai</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="MyJob" asp-action="Index">My Job</a>
             </nav>
             <partial name="_LoginPartial" />
             <button class="mobile-menu-btn">
@@ -28,6 +29,8 @@
         </div>
     </header>
             @RenderBody()
+
+
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -114,5 +117,6 @@
             });
         });
     </script>
+  
 </body>
 </html>

@@ -32,7 +32,7 @@ namespace JobHub.Controllers
         [HttpGet]
         public IActionResult CreateEndUserAccount()
         {
-            ViewBag.SkillsLevels = _context.SkillLevels.ToList();
+          
             return View();
         }
         [HttpPost]
@@ -75,7 +75,7 @@ namespace JobHub.Controllers
                         Languages = userDto.Languages.Select(l => new Language
                         {
                             Name = l.LanguageName,
-                            SkillLevelId = l.LanguageLevel,
+                            Level = l.LanguageLevel,
                         }).ToList(),
                     };
                    

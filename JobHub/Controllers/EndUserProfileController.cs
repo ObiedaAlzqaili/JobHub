@@ -17,7 +17,7 @@ namespace JobHub.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            
+
             var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
@@ -27,13 +27,13 @@ namespace JobHub.Controllers
             var endUserProfile = await _profileRepository.GetEndUserByIdAsync(userId);
             return View(endUserProfile);
         }
-       
+
         [HttpPost]
         public IActionResult UpdateEndUserProfile(UserDataDto endUserProfileDto)
         {
             if (ModelState.IsValid)
             {
-               _profileRepository.UpdateEndUserAsync(new EndUser
+                _profileRepository.UpdateEndUserAsync(new EndUser
                 {
                     Id = endUserProfileDto.Id,
                     FullName = endUserProfileDto.FullName,
@@ -65,19 +65,19 @@ namespace JobHub.Controllers
                     Skills = endUserProfileDto.Skills.Select(s => new Skill
                     {
                         SkillName = s.SkillName,
-                        SkillLevelId = s.SkillLevelId,
-                      
+                        SkillLevel = s.SkillLevel,
+
                     }).ToList(),
                     Languages = endUserProfileDto.Languages.Select(l => new Language
                     {
-                        Name = l.Name,
-                        LevelId = l.LevelId
+                        Name = l.LanguageName,
+                        Level = l.LanguageLevel,
                     }).ToList()
                 });
-
                 return RedirectToAction("Index", "Home");
             }
             return View(endUserProfileDto);
 
         }
+    }
 }

@@ -46,5 +46,5 @@ namespace JobHub.Controllers
             return View(jobApplication);
         }
 
-    }
+    } 
 }

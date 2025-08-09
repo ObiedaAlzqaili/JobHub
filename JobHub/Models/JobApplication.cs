@@ -9,7 +9,6 @@
 
         public string Email { get; set; }
 
-        public string? CoverLetter { get; set; }
         public string? ResumeBase64 { get; set; }
         public string? ResumeType { get; set; }
         public string? ResumeName { get; set; }

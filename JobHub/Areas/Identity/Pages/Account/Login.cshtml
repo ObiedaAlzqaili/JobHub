@@ -1,0 +1,259 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "_Layout"; // Make sure this uses your main layout
+}
+
+@section Styles {
+    <style>
+        /* Login Page Specific Styles */
+        .login-section {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            padding: 80px 0;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .login-form-container {
+            padding: 60px;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+            .login-header h1 {
+                color: var(--primary-dark);
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .login-header p {
+                color: var(--secondary);
+                font-size: 1.1rem;
+            }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1f5fe;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+
+            .form-control:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(137, 207, 240, 0.2);
+            }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+            .remember-me input {
+                margin-right: 10px;
+            }
+
+        .forgot-password {
+            color: var(--primary-dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+            .forgot-password:hover {
+                color: var(--primary);
+                text-decoration: underline;
+            }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-dark);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .btn-login:hover {
+                background-color: var(--primary);
+                transform: translateY(-2px);
+            }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--secondary);
+        }
+
+        .register-link {
+            color: var(--primary-dark);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-hero {
+            background: var(--primary-light);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+            .login-hero h2 {
+                color: var(--primary-dark);
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+
+            .login-hero p {
+                color: var(--secondary);
+                margin-bottom: 30px;
+            }
+
+        .hero-image {
+            max-width: 100%;
+            border-radius: var(--radius);
+            margin-top: 30px;
+        }
+
+        .text-danger {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Responsive Styles */
+        media (max-width: 992px) {
+            .login-container
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        .login-hero {
+            display: none;
+        }
+
+        .login-form-container {
+            padding: 40px 30px;
+        }
+
+        }
+
+        media (max-width: 576px) {
+            .login-form-container
+
+        {
+            padding: 30px 20px;
+        }
+
+        .form-options {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        }
+    </style>
+}
+
+<section class="login-section">
+    <div class="container">
+        <div class="login-container">
+            <div class="login-form-container">
+                <div class="login-header">
+                    <h1>Welcome Back</h1>
+                    <p>Log in to access your personalized job matches</p>
+                </div>
+
+                <form id="account" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="form-label">Email Address</label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="••••••••" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label asp-for="Input.RememberMe" class="form-check-label">Remember me</label>
+                        </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button id="login-submit" type="submit" class="btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Log In
+                    </button>
+
+                    <div class="login-footer">
+                        <p>Don't have an account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="register-link">Sign up</a></p>
+                    </div>
+                </form>
+            </div>
+
+            <div class="login-hero">
+                <h2>Find Your Dream Job</h2>
+                <p>Join thousands of professionals who found their perfect career match through JobHub</p>
+
+                <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                     alt="Happy professional" class="hero-image">
+
+                <p><strong>Your AI-powered job search partner:</strong> Find better matches, faster.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

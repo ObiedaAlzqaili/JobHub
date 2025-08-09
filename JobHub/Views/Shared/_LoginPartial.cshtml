@@ -1,26 +1,173 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<Person> SignInManager
+@inject UserManager<Person> UserManager
 
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul>
+
+
+<div class="nav-buttons">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="user-dropdown">
+            <button class="user-btn">
+                <i class="fas fa-user-circle"></i>
+                <span>@User.Identity?.Name</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-secondary">Log In</a>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">Sign Up</a>
+    }
+</div>
+
+<!-- Add this CSS to your style section -->
+<style>
+    /* User dropdown styles */
+    .user-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-btn {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+
+        .user-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .user-btn i:first-child {
+            font-size: 20px;
+        }
+
+    .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: var(--white);
+        min-width: 200px;
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+        padding: 10px 0;
+        z-index: 100;
+        display: none;
+        border: 1px solid #e3f2fd;
+    }
+
+    .user-dropdown:hover .dropdown-menu {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        color: var(--secondary);
+        transition: var(--transition);
+    }
+
+        .dropdown-item:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding-left: 25px;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item button {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+    keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Mobile styles */
+    media (max-width: 768px) {
+        .nav-buttons
+
+    {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        padding: 10px;
+        display: none;
+    }
+
+    .mobile-menu-active .nav-buttons {
+        display: flex;
+    }
+
+    .user-dropdown {
+        width: 100%;
+    }
+
+    .user-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+        position: static;
+        box-shadow: none;
+        border: none;
+    }
+
+    }
+</style>
+
+<!-- Update your mobile menu JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        const nav = document.querySelector('header');
+
+        menuBtn.addEventListener('click', function() {
+            nav.classList.toggle('mobile-menu-active');
+        });
+    });
+</script>
