@@ -3,307 +3,216 @@
 
 @{
     ViewData["Title"] = "Join JobHub";
-    Layout = "_Layout";
+    Layout = "/Views/Shared/_Layout.cshtml";
 }
+@section Styles {
+<style>
+    .register-section {
+        background: linear-gradient(135deg, #e1f5fe 0%, #b3e0ff 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 40px 0;
+    }
 
+    .register-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
 
-    <style>
-        
-        .register-section {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            padding: 80px 0;
-        }
+    .register-form {
+        flex: 1;
+        padding: 60px;
+    }
 
+    .register-hero {
+        flex: 1;
+        background: linear-gradient(135deg, #89CFF0 0%, #5DADE2 100%);
+        padding: 60px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: 700;
+        color: #5DADE2;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .logo i {
+        margin-right: 10px;
+        color: #5DADE2;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .subtitle {
+        color: #7f8c8d;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e1f5fe;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #5DADE2;
+        box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.2);
+        outline: none;
+    }
+
+    .btn-primary {
+        background-color: #5DADE2;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background-color: #4A9CD8;
+        transform: translateY(-2px);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #7f8c8d;
+    }
+
+    .login-link a {
+        color: #5DADE2;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    .hero-text {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .hero-image {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive styles */
+    media (max-width: 992px) {
         .register-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-
-        .register-form-container {
-            padding: 60px;
-        }
-
-        .register-header {
-            margin-bottom: 40px;
-        }
-
-            .register-header h1 {
-                color: var(--primary-dark);
-                font-size: 2.5rem;
-                margin-bottom: 10px;
-            }
-
-            .register-header p {
-                color: var(--secondary);
-                font-size: 1.1rem;
-            }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--secondary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1f5fe;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: var(--transition);
-            background-color: var(--light);
-        }
-
-            .form-control:focus {
-                outline: none;
-                border-color: var(--primary);
-                box-shadow: 0 0 0 3px rgba(137, 207, 240, 0.2);
-            }
-
-        .btn-register {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-dark);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-            .btn-register:hover {
-                background-color: var(--primary);
-                transform: translateY(-2px);
-            }
-
-        .register-footer {
-            text-align: center;
-            margin-top: 30px;
-            color: var(--secondary);
-        }
-
-        .login-link {
-            color: var(--primary-dark);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .register-hero {
-            background: var(--primary-light);
-            padding: 60px;
-            display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative;
         }
-
-            .register-hero h2 {
-                color: var(--primary-dark);
-                font-size: 2rem;
-                margin-bottom: 20px;
-            }
-
-            .register-hero p {
-                color: var(--secondary);
-                margin-bottom: 30px;
-            }
-
-        .hero-image {
-            max-width: 100%;
-            border-radius: var(--radius);
-            margin-top: 30px;
-        }
-
-        .text-danger {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        .social-login {
-            margin-top: 30px;
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-            color: var(--secondary);
-            font-size: 0.9rem;
-        }
-
-            .divider::before,
-            .divider::after {
-                content: "";
-                flex: 1;
-                border-bottom: 1px solid #e1f5fe;
-            }
-
-            .divider::before {
-                margin-right: 10px;
-            }
-
-            .divider::after {
-                margin-left: 10px;
-            }
-
-        .social-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .social-btn {
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #e1f5fe;
-            background-color: var(--white);
-            color: var(--secondary);
-        }
-
-            .social-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: var(--shadow);
-            }
-
-            .social-btn i {
-                font-size: 1.2rem;
-            }
-
-        /* Responsive Styles */
-        media (max-width: 992px) {
-            .register-container
-
-        {
-            grid-template-columns: 1fr;
-        }
-
+        
         .register-hero {
             display: none;
         }
-
-        .register-form-container {
-            padding: 40px 30px;
+        
+        .register-form {
+            padding: 40px;
         }
+    }
 
-        }
-
-        media (max-width: 576px) {
-            .register-form-container
-
-        {
+    media (max-width: 576px) {
+        .register-form {
             padding: 30px 20px;
         }
-
+        
+        h1 {
+            font-size: 2rem;
         }
-    </style>
-
+    }
+</style>
+}
 
 <section class="register-section">
-    <div class="container">
-        <div class="register-container">
-            <div class="register-form-container">
-                <div class="register-header">
-                    <h1>Join JobHub</h1>
-                    <p>Create your account to access personalized job matches</p>
+    <div class="register-container">
+        <div class="register-form">
+            <div class="logo">
+                <i class="fas fa-briefcase"></i>
+                JobHub
+            </div>
+            
+            <h1>Join JobHub</h1>
+            <p class="subtitle">Create your account to access personalized job matches</p>
+            
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="form-group">
+                    <input asp-for="Input.FullName" class="form-control" placeholder="Full Name" />
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
                 </div>
-
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                    <div class="form-group">
-                        <label asp-for="Input.FullName" class="form-label">Full Name</label>
-                        <input asp-for="Input.FullName" class="form-control" autocomplete="name" aria-required="true" placeholder="John Doe" />
-                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Input.phoneNumber" class="form-label">Phone Number</label>
-                        <input asp-for="Input.phoneNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="+1234567890" />
-                        <span asp-validation-for="Input.phoneNumber" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Input.Email" class="form-label">Email Address</label>
-                        <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Input.Password" class="form-label">Password</label>
-                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="••••••••" />
-                        <span asp-validation-for="Input.Password" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
-                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="••••••••" />
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                    </div>
-
-                    <button id="registerSubmit" type="submit" class="btn-register">
-                        <i class="fas fa-user-plus"></i> Create Account
-                    </button>
-
-                    <div class="register-footer">
-                        <p>Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl" class="login-link">Sign in</a></p>
-                    </div>
-
-                    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-                    {
-                        <div class="social-login">
-                            <div class="divider">
-                                <span>or sign up with</span>
-                            </div>
-
-                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                                <div class="social-buttons">
-                                    @foreach (var provider in Model.ExternalLogins!)
-                                    {
-                                        <button type="submit" class="social-btn" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account">
-                                            <i class="fab fa-@provider.Name.ToLower()"></i>
-                                            @provider.DisplayName
-                                        </button>
-                                    }
-                                </div>
-                            </form>
-                        </div>
-                    }
-                </form>
-            </div>
-
-            <div class="register-hero">
-                <h2>Start Your Career Journey</h2>
-                <p>Join thousands of professionals who found their perfect career match through JobHub</p>
-
-                <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                     alt="Happy professional" class="hero-image">
-
-                <p><strong>Your AI-powered job search partner:</strong> Find better matches, faster.</p>
-            </div>
+                
+                <div class="form-group">
+                    <input asp-for="Input.Email" class="form-control" placeholder="Email Address" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input asp-for="Input.phoneNumber" class="form-control" placeholder="Phone Number" />
+                    <span asp-validation-for="Input.phoneNumber" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input asp-for="Input.Password" class="form-control" placeholder="Password" type="password" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm Password" type="password" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                
+                <button type="submit" class="btn-primary">Get Started</button>
+                
+                <div class="login-link">
+                    Already have an account? <a asp-page="./Login">Sign in</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="register-hero">
+            <h2 class="hero-title">Start Your Career Journey</h2>
+            <p class="hero-text">Join thousands of professionals who found their perfect career match through JobHub.</p>
+            <p><strong>Your AI-powered job search partner:</strong> Find better matches, faster.</p>
+            <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                 alt="Happy professional" class="hero-image">
         </div>
     </div>
 </section>
