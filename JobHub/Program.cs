@@ -29,14 +29,6 @@ namespace JobHub
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            // Pseudocode:
-            // 1. Add code to read the key from "sercrite.json".
-            // 2. Register the key in the DI container as "userManagerSercirte".
-            // 3. Use Configuration to load the file and access the key.
-            //this is for mailKit
-
-
-            // Add after builder initialization
 
 
             var key = builder.Configuration["OpenAi:key"];

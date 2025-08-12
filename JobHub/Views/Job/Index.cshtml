@@ -1,5 +1,442 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model List<JobHub.DTOs.Job.JobPostSearchDto>
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #2ecc71;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --gray-color: #95a5a6;
+        --danger-color: #e74c3c;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 80px 0;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+    }
+
+    /* Search Form */
+    .search-form {
+        margin-top: 30px;
+    }
+
+    .search-input-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+        .search-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+
+        .search-input input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+    .search-button {
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--box-shadow);
+    }
+
+        .search-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+    /* Main Content */
+    .main-content {
+        padding: 50px 0;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--gray-color);
+        }
+
+    /* Jobs Grid */
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    /* Job Card */
+    .job-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .job-card-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .company-logo-placeholder {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--light-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+        .company-logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    .job-title {
+        font-size: 1.2rem;
+        color: var(--dark-color);
+        margin-bottom: 5px;
+    }
+
+    .company-name {
+        color: var(--gray-color);
+        font-size: 0.9rem;
+    }
+
+    .job-card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+        .job-meta i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+    .location, .job-type, .salary, .posted-date {
+        display: flex;
+        align-items: center;
+    }
+
+    .job-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .skill-tag {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    .job-card-footer {
+        padding: 15px 20px;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-view-details {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+        .btn-view-details:hover {
+            background-color: var(--primary-dark);
+        }
+
+    .btn-save-job {
+        background: none;
+        border: none;
+        color: var(--gray-color);
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: var(--transition);
+    }
+
+        .btn-save-job:hover {
+            color: var(--danger-color);
+        }
+
+    /* No Jobs Found */
+    .no-jobs-found {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--gray-color);
+    }
+
+        .no-jobs-found i {
+            margin-bottom: 20px;
+        }
+
+        .no-jobs-found h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+    /* View All Button */
+    .view-all-jobs {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-view-all {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+        .btn-view-all:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+    /* Responsive Adjustments */
+    media (max-width: 768px) {
+        .hero-title
+
+    {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .search-input-group {
+        flex-direction: column;
+    }
+
+    .search-input, .search-button {
+        width: 100%;
+    }
+
+    .jobs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    media (max-width: 480px) {
+        .hero-section
+
+    {
+        padding: 60px 0;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .job-card-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .job-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    }
+</style>
+<div class="hero-section bg-gradient-primary">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Find Your Dream Job Today</h1>
+            <p class="hero-subtitle">Thousands of jobs waiting for you</p>
+            <form method="get" asp-action="JobSearchResult" asp-controller="Job" class="search-form">
+                <div class="search-input-group">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="title" placeholder="Job title, keywords, or company">
+                    </div>
+                    <div class="search-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" name="location" placeholder="City, state, or remote">
+                    </div>
+                    <button type="submit" class="search-button">Search Jobs</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container main-content">
+    <div class="section-header">
+        <h2>Latest Job Opportunities</h2>
+        <p>Browse our most recent job postings</p>
+    </div>
+
+    <div class="jobs-grid">
+        @foreach (var job in @Model)
+        {
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="company-logo-placeholder">
+                      
+                            <span>@job.CompanyName.Substring(0, 1)</span>
+                       
+                    </div>
+                    <div>
+                        <h3 class="job-title">@job.Title</h3>
+                        <p class="company-name">@job.CompanyName</p>
+                    </div>
+                </div>
+                <div class="job-card-body">
+                    <div class="job-meta">
+                        <span class="location"><i class="fas fa-map-marker-alt"></i> @job.Location</span>
+                        @* <span class="job-type"><i class="fas fa-briefcase"></i> @job.JobType</span> *@
+                    </div>
+                    <div class="job-meta">
+                        @* <span class="salary"><i class="fas fa-money-bill-wave"></i> @job.SalaryRange</span> *@
+                        <span class="posted-date"><i class="fas fa-calendar-alt"></i> @job.PostedAt.ToShortDateString()</span>
+                    </div>
+                    @* <div class="job-skills">
+                        <div class="job-skills">
+                            <p class="skill-tag">@job.RequiredSkills</p>
+                        </div>
+                       
+                    </div> *@
+                </div>
+                <div class="job-card-footer">
+                    <a asp-page="/Jobs/Details" asp-route-id="@job.Id" class="btn-view-details">View Details</a>
+                    <button class="btn-save-job" title="Save job">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="no-jobs-found">
+            <i class="fas fa-search fa-3x"></i>
+            <h3>No jobs found</h3>
+            <p>Try adjusting your search criteria</p>
+        </div>
+    }
+
+    @* <div class="view-all-jobs">
+        <a href="/Jobs" class="btn-view-all">View All Jobs</a>
+    </div> *@
+</div>
+

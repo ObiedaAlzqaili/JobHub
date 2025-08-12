@@ -1,5 +1,497 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model List<JobHub.DTOs.Job.JobPostSearchDto>
+
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #2ecc71;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --gray-color: #95a5a6;
+        --light-gray: #e0e0e0;
+        --danger-color: #e74c3c;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .search-results {
+        padding: 40px 0;
+        background-color: #f5f7fa;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Results Header */
+    .results-header {
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .results-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+        }
+
+    .results-count {
+        color: var(--gray-color);
+        font-size: 0.9rem;
+    }
+
+    /* Filters */
+    .filters-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .sort-options {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sort-select {
+        padding: 8px 15px;
+        border-radius: 5px;
+        border: 1px solid var(--light-gray);
+        background-color: white;
+        cursor: pointer;
+    }
+
+    .view-toggle {
+        display: flex;
+        gap: 5px;
+    }
+
+    .view-option {
+        background: white;
+        border: 1px solid var(--light-gray);
+        color: var(--gray-color);
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .view-option.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+    /* Results Container */
+    .results-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+    }
+
+        .results-container.list-view {
+            grid-template-columns: 1fr;
+        }
+
+            .results-container.list-view .job-card {
+                flex-direction: row;
+            }
+
+            .results-container.list-view .job-card-header {
+                flex-direction: row;
+                align-items: flex-start;
+                min-width: 250px;
+            }
+
+            .results-container.list-view .job-card-body {
+                flex-grow: 1;
+            }
+
+    /* Job Card */
+    .job-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+    }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .job-card-header {
+        padding: 20px;
+        display: flex;
+        gap: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .company-logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--light-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    .job-title {
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        margin-bottom: 5px;
+    }
+
+    .company-name {
+        color: var(--gray-color);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .job-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        font-size: 0.85rem;
+    }
+
+        .job-meta i {
+            margin-right: 5px;
+            color: var(--primary-color);
+        }
+
+    .job-card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .job-description {
+        color: #555;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .job-footer-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        font-size: 0.85rem;
+        color: var(--gray-color);
+    }
+
+    .job-card-footer {
+        padding: 15px 20px;
+        background-color: #f9f9f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+    .btn-save-job {
+        background: none;
+        border: none;
+        color: var(--gray-color);
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: var(--transition);
+    }
+
+        .btn-save-job:hover {
+            color: var(--danger-color);
+        }
+
+    /* No Results */
+    .no-results {
+        text-align: center;
+        padding: 50px 20px;
+        grid-column: 1 / -1;
+    }
+
+        .no-results i {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .no-results p {
+            color: var(--gray-color);
+            margin-bottom: 20px;
+        }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40px;
+        gap: 10px;
+    }
+
+    .page-btn {
+        padding: 8px 15px;
+        background-color: white;
+        border: 1px solid var(--light-gray);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: var(--light-color);
+        }
+
+    .page-numbers {
+        display: flex;
+        gap: 5px;
+    }
+
+    .page-number {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .page-number:hover {
+            background-color: var(--light-color);
+        }
+
+        .page-number.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+    /* Responsive Design */
+    media (max-width: 992px) {
+        .results-container
+
+    {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    }
+
+    media (max-width: 768px) {
+        .results-header
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filters-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .results-container.list-view .job-card {
+        flex-direction: column;
+    }
+
+    .results-container.list-view .job-card-header {
+        min-width: auto;
+    }
+
+    }
+
+    media (max-width: 576px) {
+        .results-container
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    .job-meta, .job-footer-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    }
+</style>
+<div class="search-results">
+    <div class="container">
+        <div class="results-header">
+            <h2>Search Results</h2>
+            <p class="results-count">@Model.Count jobs found</p>
+        </div>
+
+        <div class="filters-container">
+            <div class="sort-options">
+                <label for="sort-by">Sort by:</label>
+                <select id="sort-by" class="sort-select">
+                    <option value="recent">Most Recent</option>
+                    <option value="relevant">Most Relevant</option>
+                    <option value="salary-high">Highest Salary</option>
+                    <option value="salary-low">Lowest Salary</option>
+                </select>
+            </div>
+            <div class="view-toggle">
+                <button class="view-option active" data-view="grid" title="Grid view">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-option" data-view="list" title="List view">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="results-container grid-view">
+            @if (Model.Count == 0)
+            {
+                <div class="no-results">
+                    <i class="fas fa-search fa-3x"></i>
+                    <h3>No jobs found matching your criteria</h3>
+                    <p>Try adjusting your search filters or broadening your search terms</p>
+                    <a href="/Jobs" class="btn-primary">Browse All Jobs</a>
+                </div>
+            }
+            else
+            {
+                @foreach (var job in Model)
+                {
+                    <div class="job-card">
+                        <div class="job-card-header">
+                            <div class="company-logo">
+                                
+                                    <span>@job.CompanyName?.Substring(0, 1)</span>
+                                
+                            </div>
+                            <div>
+                                <h3 class="job-title">@job.Title</h3>
+                                <p class="company-name">@job.CompanyName</p>
+                                <div class="job-meta">
+                                    <span class="location"><i class="fas fa-map-marker-alt"></i> @job.Location</span>
+                                    @* @if (!string.IsNullOrEmpty(job.SalaryRange))
+                                    {
+                                        <span class="salary"><i class="fas fa-money-bill-wave"></i> @job.SalaryRange</span>
+                                    } *@
+                                </div>
+                            </div>
+                        </div>
+                        @* <div class="job-card-body">
+                            <p class="job-description">@job.ShortDescription</p>
+                            <div class="job-footer-meta">
+                                <span class="posted-date"><i class="fas fa-calendar-alt"></i> @job.PostedAt.ToShortDateString()</span>
+                                <span class="job-type"><i class="fas fa-clock"></i> @job.JobType</span>
+                            </div>
+                        </div> *@
+                        <div class="job-card-footer">
+                            <a asp-page="/Jobs/Details" asp-route-id="@job.Id" class="btn-primary">View Details</a>
+                            <button class="btn-save-job" title="Save job">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        @if (Model.Count > 0)
+        {
+            <div class="pagination">
+                <button class="page-btn" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <div class="page-numbers">
+                    <span class="page-number active">1</span>
+                    <span class="page-number">2</span>
+                    <span class="page-number">3</span>
+                    <span class="page-number">...</span>
+                    <span class="page-number">10</span>
+                </div>
+                <button class="page-btn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+
+<script>
+    // View toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewOptions = document.querySelectorAll('.view-option');
+        const resultsContainer = document.querySelector('.results-container');
+
+        viewOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                viewOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+
+                if (this.dataset.view === 'list') {
+                    resultsContainer.classList.add('list-view');
+                } else {
+                    resultsContainer.classList.remove('list-view');
+                }
+            });
+        });
+    });
+</script>

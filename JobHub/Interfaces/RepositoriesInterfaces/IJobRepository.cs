@@ -5,7 +5,10 @@ namespace JobHub.Interfaces.RepositoriesInterfaces
 {
     public interface IJobRepository
     {
+
         public Task  GetJobByIdAsync(int jobId);
+
+        public Task<IEnumerable<JobPostSearchDto>> GetFiveJobAsync();
 
         public Task<IEnumerable<JobPostSearchDto>> GetAllJobsAsync();
 

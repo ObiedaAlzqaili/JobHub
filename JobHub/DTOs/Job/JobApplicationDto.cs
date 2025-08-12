@@ -7,6 +7,9 @@
         public string ApplicantEmail { get; set; }
         public string PhoneNumber { get; set; }
 
+        public string JobTitle { get; set; }
+        public string CompanyName { get; set; }
+        public IFormFile ResumeFile { get; set; }
         public string ResumeBase64 { get; set; }
         public string ResumeFileName { get; set; }
 

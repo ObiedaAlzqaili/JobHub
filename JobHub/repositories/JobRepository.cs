@@ -17,73 +17,148 @@ namespace JobHub.repositories
             _context = context;
         }
 
-        public Task<bool> CreateJobApplication(JobApplicationDto application)
+        public async Task<bool> CreateJobApplication(JobApplicationDto application)
         {
-            if (application == null)
+            try
             {
-                throw new ArgumentNullException(nameof(application), "Application cannot be null");
+                if (application == null)
+                {
+                    throw new ArgumentNullException(nameof(application), "Application cannot be null");
+                }
+
+                var jobApplication = new JobApplication
+                {
+                    JobPostId = application.JobPostId,
+                    Name = application.ApplicantName,
+                    Email = application.ApplicantEmail,
+                    PhoneNumber = application.PhoneNumber,
+                    ResumeBase64 = application.ResumeBase64,
+                    ResumeName = application.ResumeFileName,
+                    ResumeType = application.ResumeFileType,
+                    EndUserId = application.EndUserId,
+                    AppliedOn = DateTime.UtcNow,
+                    Status = "Pending"
+                };
+
+                _context.JobApplications.Add(jobApplication);
+                return await _context.SaveChangesAsync() > 0;
             }
-            var jobApplication = new JobApplication
+            catch (Exception ex)
             {
-                JobPostId = application.JobPostId,
-                Name = application.ApplicantName,
-                Email = application.ApplicantEmail,
-                PhoneNumber = application.PhoneNumber,
-                ResumeBase64 = application.ResumeBase64,
-                ResumeName = application.ResumeFileName,
-                ResumeType = application.ResumeFileType,
-                EndUserId = application.EndUserId, 
-                AppliedOn = DateTime.UtcNow,
-                Status = "Pending"
-            };
-            _context.JobApplications.Add(jobApplication);
-            return _context.SaveChangesAsync().ContinueWith(t => t.Result > 0);
+                // Log exception here
+                throw new Exception("An error occurred while creating the job application.", ex);
+            }
         }
 
         public async Task<IEnumerable<JobPostSearchDto>> GetAllJobsAsync()
         {
-            return await _context.JobPosts
-                .Select(j => new JobPostSearchDto
-                {
-                    Id = j.Id,
-                    Title = j.Title,
-                    PostedAt = j.PostedAt,
-                    CompanyName = j.Company.CompanyName,
-                    Location = j.Location
-                })
-                .ToListAsync();
+            try
+            {
+                return await _context.JobPosts
+                    .Select(j => new JobPostSearchDto
+                    {
+                        Id = j.Id,
+                        Title = j.Title,
+                        PostedAt = j.PostedAt,
+                        CompanyName = j.Company.CompanyName,
+                        Location = j.Location
+                    })
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+        
+                throw new Exception("An error occurred while retrieving all jobs.", ex);
+            }
         }
 
-        public Task GetJobByIdAsync(int jobId)
+        public async Task<IEnumerable<JobPostSearchDto>> GetFiveJobAsync()
         {
-            return _context.JobPosts
-                .Where(j => j.Id == jobId)
-                .FirstOrDefaultAsync();
+            try
+            {
+                return await _context.JobPosts
+                    .Select(j => new JobPostSearchDto
+                    {
+                        Id = j.Id,
+                        Title = j.Title,
+                        PostedAt = j.PostedAt,
+                        CompanyName = j.Company.CompanyName,
+                        Location = j.Location
+                    })
+                    .Take(5)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception("An error occurred while retrieving the top five jobs.", ex);
+            }
         }
 
-        public Task<IEnumerable<JobPostSearchDto>> GetJobsByCompanyAsync(int id)
+        public async Task<JobPost> GetJobByIdAsync(int jobId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.JobPosts
+                    .Where(j => j.Id == jobId)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log exception here
+                throw new Exception($"An error occurred while retrieving the job with ID {jobId}.", ex);
+            }
         }
+
+        public async Task<IEnumerable<JobPostSearchDto>> GetJobsByCompanyAsync(int id)
+        {
+            //try
+            //{
+            //    return await _context.JobPosts
+            //        .Where(j => j.Company.Id == id)
+            //        .Select(j => new JobPostSearchDto
+            //        {
+            //            Id = j.Id,
+            //            Title = j.Title,
+            //            PostedAt = j.PostedAt,
+            //            CompanyName = j.Company.CompanyName,
+            //            Location = j.Location
+            //        })
+            //        .ToListAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Log exception here
+            //    throw new Exception($"An error occurred while retrieving jobs for the company with ID {id}.", ex);
+            //}
+            throw new NotImplementedException("decs");
+       }
 
         public async Task<IEnumerable<JobPostSearchDto>> GetJobsByTitleAsync(string title, string location)
         {
-            var jobs = await _context.JobPosts
-                .Where(j => j.Title.Contains(title) && j.Location.Contains(location))
-                .Select(j => new JobPostSearchDto
-                {
-                    Title = j.Title,
-                    PostedAt = j.PostedAt,
-                    CompanyName = j.Company.CompanyName,
-                    Location = j.Location
-                })
-                .ToListAsync();
-
-            return jobs;
+            try
+            {
+                return await _context.JobPosts
+                    .Where(j => j.Title.Contains(title) && j.Location.Contains(location))
+                    .Select(j => new JobPostSearchDto
+                    {
+                        Title = j.Title,
+                        PostedAt = j.PostedAt,
+                        CompanyName = j.Company.CompanyName,
+                        Location = j.Location
+                    })
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Log exception here
+                throw new Exception($"An error occurred while retrieving jobs with title '{title}' and location '{location}'.", ex);
+            }
         }
 
-      
-
-        
+        Task IJobRepository.GetJobByIdAsync(int jobId)
+        {
+            return GetJobByIdAsync(jobId);
+        }
     }
 }
