@@ -9,6 +9,10 @@ namespace JobHub.Models
 
         public string? Gender { get; set; }
 
+        public string? ResumeBase64 { get; set; }
+        public string? ResumeType { get; set; }
+        public string? ResumeName { get; set; }
+
         public string? AiKeyWords { get; set; }
 
         public Resume? Resumes { get; set; }
@@ -19,6 +23,6 @@ namespace JobHub.Models
         public ICollection<Language>? Languages { get; set; }
 
         //Jobs User Applied For
-        public ICollection<JobApplication> JobApplications { get; set; }
+        public ICollection<JobApplication>? JobApplications { get; set; }
     }
 }

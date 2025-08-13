@@ -4,6 +4,7 @@ using JobHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobHub.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250813170052_EditOnEndUserEntity")]
+    partial class EditOnEndUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -556,15 +559,6 @@ namespace JobHub.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Headline")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResumeBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResumeName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ResumeType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SkillsSummary")

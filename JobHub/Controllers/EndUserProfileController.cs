@@ -26,7 +26,54 @@ namespace JobHub.Controllers
             }
 
             var endUserProfile = await _profileRepository.GetEndUserByIdAsync(userId);
-            return View(endUserProfile);
+            if (endUserProfile == null)
+            {
+                return NotFound("End user profile not found.");
+            }
+            var endUserProfileDto = new UserDataDto
+            {
+                FullName = endUserProfile.FullName,
+                PhoneNumber = endUserProfile.PhoneNumber,
+                Address = endUserProfile.Address,
+                DayOfBirth = endUserProfile.DayOfBirth,
+                Description = endUserProfile.Description,
+                PersonalImageBase64 = endUserProfile.PersonalImageBase64,
+                PersonalImageType = endUserProfile.PersonalImageType,
+                PersonalImageName = endUserProfile.PersonalImageName,
+                ResumeBase64 = endUserProfile.ResumeBase64,
+                ResumeType = endUserProfile.ResumeType,
+                ResumeName = endUserProfile.ResumeName,
+                HeadLine = endUserProfile.Headline,
+                Education = endUserProfile.EducationList.Select(e => new EducationsDto
+                {
+                    CollegeName = e.CollegeName,
+                    FieldOfStudy = e.FieldOfStudy,
+                    Description = e.Description,
+                    Gpa = e.Gpa,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate
+                }).ToList(),
+                Experiences = endUserProfile.ExperienceList.Select(e => new ExperinceDto
+                {
+                    CompanyName = e.CompanyName,
+                    Description = e.Description,
+                    Location = e.Location,
+                    Title = e.Title,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate
+                }).ToList(),
+                Skills = endUserProfile.Skills.Select(s => new SkillsDto
+                {
+                    SkillName = s.SkillName,
+                    SkillLevel = s.SkillLevel
+                }).ToList(),
+                Languages = endUserProfile.Languages.Select(l => new LanguageDto
+                {
+                    LanguageName = l.Name,
+                    LanguageLevel = l.Level
+                }).ToList()
+            };
+            return View(endUserProfileDto);
         }
 
         [HttpPost]
@@ -36,7 +83,7 @@ namespace JobHub.Controllers
             {
                 _profileRepository.UpdateEndUserAsync(new EndUser
                 {
-                    Id = endUserProfileDto.Id,
+                    Id = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
                     FullName = endUserProfileDto.FullName,
                     PhoneNumber = endUserProfileDto.PhoneNumber,
                     Address = endUserProfileDto.Address,
@@ -118,8 +165,9 @@ namespace JobHub.Controllers
         //    }
         //    return BadRequest("No file uploaded.");
         //}
+
         [HttpGet]
-        public  IActionResult CreateProfile()
+        public  IActionResult CreateProfile(string id)
         {
           var endUserProfileDto = new UserDataDto
             {
@@ -141,17 +189,44 @@ namespace JobHub.Controllers
                 {
                     return Unauthorized();
                 }
+                if (endUserProfileDto.PersonalImage != null && endUserProfileDto.PersonalImage.Length > 0)
+                {
+                    // Convert the uploaded file to Base64 string
+                    using (var ms = new MemoryStream())
+                    {
+                        await endUserProfileDto.PersonalImage.CopyToAsync(ms);
+                        endUserProfileDto.PersonalImageBase64 = Convert.ToBase64String(ms.ToArray());
+                    }
+                    endUserProfileDto.PersonalImageType = endUserProfileDto.PersonalImage.ContentType;
+                    endUserProfileDto.PersonalImageName = endUserProfileDto.PersonalImage.FileName;
+                }
+                if (endUserProfileDto.ResumeFile != null && endUserProfileDto.ResumeFile.Length > 0)
+                {
+                    // Convert the uploaded file to Base64 string
+                    using (var ms = new MemoryStream())
+                    {
+                        await endUserProfileDto.ResumeFile.CopyToAsync(ms);
+                        endUserProfileDto.ResumeBase64 = Convert.ToBase64String(ms.ToArray());
+                    }
+                    endUserProfileDto.ResumeType = endUserProfileDto.ResumeFile.ContentType;
+                    endUserProfileDto.ResumeName = endUserProfileDto.ResumeFile.FileName;
+                }
                 var endUserProfile = new EndUser
                 {
                     Id = userId,
                     FullName = endUserProfileDto.FullName,
                     PhoneNumber = endUserProfileDto.PhoneNumber,
+                    Headline = endUserProfileDto.HeadLine,
                     Address = endUserProfileDto.Address,
                     DayOfBirth = DateTime.Parse(endUserProfileDto.DayOfBirth).ToString(),
                     Description = endUserProfileDto.Description,
                     PersonalImageBase64 = endUserProfileDto.PersonalImageBase64,
                     PersonalImageType = endUserProfileDto.PersonalImageType,
                     PersonalImageName = endUserProfileDto.PersonalImageName,
+                    ResumeBase64 = endUserProfileDto.ResumeBase64,
+                    ResumeType = endUserProfileDto.ResumeType,
+                    ResumeName = endUserProfileDto.ResumeName,
+                    
                     EducationList = endUserProfileDto.Education.Select(e => new Education
                     {
                         CollegeName = e.CollegeName,
