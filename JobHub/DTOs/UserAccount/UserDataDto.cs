@@ -13,6 +13,7 @@ namespace JobHub.DTOs.UserAccount
         public string? Address { get; set; }
         public string DayOfBirth { get; set; }
         public string? Description { get; set; }
+        public IFormFile PersonalImage { get; set; }
         public string? PersonalImageBase64 { get; set; }
         public string PersonalImageType { get;set; }
         public string PersonalImageName { get; set; }
@@ -27,10 +28,11 @@ namespace JobHub.DTOs.UserAccount
 
         public List<ExperinceDto> Experiences { get; set; } = new List<ExperinceDto>();
 
-        public List<EducationDto> Education { get; set; } = new List<EducationDto>();
-        public List<SkillDto> Skills { get; set; } = new List<SkillDto>();
-        public List<LanguageDto> Languages { get; set; }
+        public List<EducationsDto> Education { get; set; } = new List<EducationsDto>();
+        public List<SkillsDto> Skills { get; set; } = new List<SkillsDto>();
+        public List<LanguageDto> Languages { get; set; } = new List<LanguageDto>();
 
+        public IFormFile ResumeFile { get; set; }
         public string ResumeBase64 { get; set; }
         public string ResumeType { get; set; }
         public string ResumeName { get; set; }

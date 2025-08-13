@@ -1,0 +1,1020 @@
+﻿@using JobHub.DTOs.UserAccount
+@model JobHub.DTOs.UserAccount.UserDataDto
+@{
+  
+
+}
+
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #2ecc71;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --gray-color: #95a5a6;
+        --light-gray: #e0e0e0;
+        --danger-color: #e74c3c;
+        --warning-color: #f39c12;
+        --success-color: #2ecc71;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .registration-page {
+        padding: 40px 0;
+        background-color: #f5f7fa;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Header */
+    .registration-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+        .registration-header h1 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .registration-header p {
+            color: var(--gray-color);
+        }
+
+    /* Form */
+    .registration-form {
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--box-shadow);
+        padding: 30px;
+    }
+
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section h2 {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+        }
+
+    /* Form Grid */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .span-2 {
+        grid-column: span 2;
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+            .form-group label:after {
+                content: "*";
+                color: var(--danger-color);
+                margin-left: 4px;
+                display: none;
+            }
+
+            .form-group label[required]:after {
+                display: inline;
+            }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"],
+        .form-group input[type="tel"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                border-color: var(--primary-color);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+    /* Photo Upload */
+    .photo-upload {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .photo-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .photo-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: var(--light-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-size: 2rem;
+        overflow: hidden;
+    }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .photo-upload-controls {
+        flex-grow: 1;
+    }
+
+    .btn-upload {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-bottom: 5px;
+    }
+
+        .btn-upload:hover {
+            background-color: var(--primary-dark);
+        }
+
+    .file-note {
+        font-size: 0.8rem;
+        color: var(--gray-color);
+    }
+
+    /* Education/Experience/Skills/Languages Entries */
+    .education-entry,
+    .experience-entry,
+    .skill-entry,
+    .language-entry {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .btn-remove-education,
+    .btn-remove-experience,
+    .btn-remove-skill,
+    .btn-remove-language {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--danger-color);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .btn-remove-education:hover,
+        .btn-remove-experience:hover,
+        .btn-remove-skill:hover,
+        .btn-remove-language:hover {
+            text-decoration: underline;
+        }
+
+    .btn-add-more {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .btn-add-more:hover {
+            text-decoration: underline;
+        }
+
+    /* Resume Upload */
+    .resume-upload {
+        margin-top: 15px;
+    }
+
+    .file-upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        border: 2px dashed var(--light-gray);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+    }
+
+        .file-upload-label:hover {
+            border-color: var(--primary-color);
+        }
+
+        .file-upload-label i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .file-upload-label span {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .file-upload-label p {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+    .resume-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+
+        .resume-preview i {
+            color: var(--danger-color);
+            font-size: 1.5rem;
+        }
+
+    .btn-remove-resume {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: var(--danger-color);
+        cursor: pointer;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .btn-submit {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 5px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+
+    /* Checkbox */
+    .checkbox-container {
+        display: block;
+        position: relative;
+        padding-left: 25px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--dark-color);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 18px;
+        width: 18px;
+        background-color: white;
+        border: 1px solid var(--light-gray);
+        border-radius: 3px;
+    }
+
+    .checkbox-container:hover input ~ .checkmark {
+        background-color: #f1f1f1;
+    }
+
+    .checkbox-container input:checked ~ .checkmark {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    .checkbox-container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .checkbox-container .checkmark:after {
+        left: 6px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    /* Responsive Design */
+    media (max-width: 768px) {
+        .photo-upload
+
+    {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .span-2 {
+        grid-column: span 1;
+    }
+
+    }
+
+    media (max-width: 576px) {
+        .registration-form
+
+    {
+        padding: 20px;
+    }
+
+    .education-entry,
+    .experience-entry,
+    .skill-entry,
+    .language-entry {
+        padding: 15px;
+    }
+
+    }
+</style>
+<div class="registration-page">
+    <div class="container">
+        <div class="registration-header">
+            <h1>Complete Your Profile</h1>
+            <p>Help us understand your professional background</p>
+        </div>
+
+        <form asp-action="CreateProfile" method="post" enctype="multipart/form-data" class="registration-form">
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label asp-for="FullName">Full Name*</label>
+                        <input asp-for="FullName" type="text" required>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="HeadLine">Professional Headline</label>
+                        <input asp-for="HeadLine" type="text" placeholder="e.g. Software Engineer">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DayOfBirth">Date of Birth</label>
+                        <input asp-for="DayOfBirth" type="date">
+                        <span asp-validation-for="DayOfBirth" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber">Phone Number</label>
+                        <input asp-for="PhoneNumber" type="tel">
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address">Address</label>
+                        <input asp-for="Address" type="text">
+                    </div>
+                    <div class="form-group span-2">
+                        <label asp-for="Description">About You</label>
+                        <textarea asp-for="Description" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Photo -->
+            <div class="form-section">
+                <h2>Profile Photo</h2>
+                <div class="photo-upload">
+                    <div class="photo-preview">
+                        <div id="photoPreview" class="photo-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="photo-upload-controls">
+                        <input type="file" id="photoUpload" name="PersonalImage" accept="image/*" style="display: none;">
+                        <label for="photoUpload" class="btn-upload">Upload Photo</label>
+                        <p class="file-note">Recommended size: 300x300 pixels</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="form-section">
+                <h2>Education</h2>
+                <div id="educationContainer">
+                    @for (int i = 0; Model.Education != null  && i < Model.Education.Count; i++)
+                    {
+                        <div class="education-entry">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label asp-for="Education[i].CollegeName">College/University*</label>
+                                    <input asp-for="Education[i].CollegeName" required>
+                                    <span asp-validation-for="Education[i].CollegeName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Education[i].FieldOfStudy">Field of Study*</label>
+                                    <input asp-for="Education[i].FieldOfStudy" required>
+                                    <span asp-validation-for="Education[i].FieldOfStudy" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Education[i].StartDate">Start Date*</label>
+                                    <input asp-for="Education[i].StartDate" type="date" required>
+                                    <span asp-validation-for="Education[i].StartDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Education[i].EndDate">End Date</label>
+                                    <input asp-for="Education[i].EndDate" type="date">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="currently-studying"> Currently studying
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Education[i].Gpa">GPA</label>
+                                    <input asp-for="Education[i].Gpa" type="number" step="0.1" min="0" max="4">
+                                </div>
+                                <div class="form-group span-2">
+                                    <label asp-for="Education[i].Description">Description</label>
+                                    <textarea asp-for="Education[i].Description" rows="2"></textarea>
+                                </div>
+                            </div>
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn-remove-education">Remove</button>
+                            }
+                        </div>
+                    }
+                </div>
+                <button type="button" id="addEducation" class="btn-add-more">+ Add Another Education</button>
+            </div>
+
+            <!-- Experience -->
+            <div class="form-section">
+                <h2>Work Experience</h2>
+                <div id="experienceContainer">
+                    @for (int i = 0; Model.Experiences != null && i < Model.Experiences.Count; i++)
+                    {
+                        <div class="experience-entry">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label asp-for="Experiences[i].Title">Job Title*</label>
+                                    <input asp-for="Experiences[i].Title" required>
+                                    <span asp-validation-for="Experiences[i].Title" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Experiences[i].CompanyName">Company*</label>
+                                    <input asp-for="Experiences[i].CompanyName" required>
+                                    <span asp-validation-for="Experiences[i].CompanyName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Experiences[i].Location">Location</label>
+                                    <input asp-for="Experiences[i].Location">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Experiences[i].StartDate">Start Date*</label>
+                                    <input asp-for="Experiences[i].StartDate" type="date" required>
+                                    <span asp-validation-for="Experiences[i].StartDate" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Experiences[i].EndDate">End Date</label>
+                                    <input asp-for="Experiences[i].EndDate" type="date">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="currently-working"> Currently working here
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group span-2">
+                                    <label asp-for="Experiences[i].Description">Description</label>
+                                    <textarea asp-for="Experiences[i].Description" rows="2"></textarea>
+                                </div>
+                            </div>
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn-remove-experience">Remove</button>
+                            }
+                        </div>
+                    }
+                </div>
+                <button type="button" id="addExperience" class="btn-add-more">+ Add Another Experience</button>
+            </div>
+
+            <!-- Skills -->
+            <div class="form-section">
+                <h2>Skills</h2>
+                <div id="skillsContainer">
+                    @for (int i = 0; Model.Skills != null && i < Model.Skills.Count; i++)
+                    {
+                        <div class="skill-entry">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label asp-for="Skills[i].SkillName">Skill Name*</label>
+                                    <input asp-for="Skills[i].SkillName" required>
+                                    <span asp-validation-for="Skills[i].SkillName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Skills[i].SkillLevel">Skill Level*</label>
+                                    <select asp-for="Skills[i].SkillLevel" required>
+                                        <option value="">Select level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                    </select>
+                                    <span asp-validation-for="Skills[i].SkillLevel" class="text-danger"></span>
+                                </div>
+                            </div>
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn-remove-skill">Remove</button>
+                            }
+                        </div>
+                    }
+                </div>
+                <button type="button" id="addSkill" class="btn-add-more">+ Add Another Skill</button>
+            </div>
+
+            <!-- Languages -->
+            <div class="form-section">
+                <h2>Languages</h2>
+                <div id="languagesContainer">
+                    @for (int i = 0; Model.Languages != null && i < Model.Languages.Count; i++)
+                    {
+                        <div class="language-entry">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label asp-for="Languages[i].LanguageName">Language*</label>
+                                    <input asp-for="Languages[i].LanguageName" required>
+                                    <span asp-validation-for="Languages[i].LanguageName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Languages[i].LanguageLevel">Proficiency Level*</label>
+                                    <select asp-for="Languages[i].LanguageLevel" required>
+                                        <option value="">Select level</option>
+                                        <option value="Basic">Basic</option>
+                                        <option value="Conversational">Conversational</option>
+                                        <option value="Fluent">Fluent</option>
+                                        <option value="Native">Native</option>
+                                    </select>
+                                    <span asp-validation-for="Languages[i].LanguageLevel" class="text-danger"></span>
+                                </div>
+                            </div>
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn-remove-language">Remove</button>
+                            }
+                        </div>
+                    }
+                </div>
+                <button type="button" id="addLanguage" class="btn-add-more">+ Add Another Language</button>
+            </div>
+
+            <!-- Resume -->
+            <div class="form-section">
+                <h2>Resume</h2>
+                <div class="resume-upload">
+                    <input type="file" id="resumeUpload" name="ResumeFile" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                    <label for="resumeUpload" class="file-upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Upload Your Resume</span>
+                        <p>PDF, DOC, DOCX, or TXT files (Max 5MB)</p>
+                    </label>
+                    <div id="resumePreview" class="resume-preview" style="display: none;">
+                        <i class="fas fa-file-alt"></i>
+                        <span id="resumeFileName"></span>
+                        <button type="button" class="btn-remove-resume">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-section terms-section">
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Save Profile</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Photo upload preview
+            const photoUpload = document.getElementById('photoUpload');
+            const photoPreview = document.getElementById('photoPreview');
+
+            photoUpload.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        if (photoPreview.tagName === 'IMG') {
+                            photoPreview.src = e.target.result;
+                        } else {
+                            // Replace placeholder with image
+                            const img = document.createElement('img');
+                            img.id = 'photoPreview';
+                            img.src = e.target.result;
+                            img.alt = 'Profile Photo';
+                            img.style.width = '100px';
+                            img.style.height = '100px';
+                            img.style.borderRadius = '50%';
+                            img.style.objectFit = 'cover';
+                            photoPreview.replaceWith(img);
+                        }
+                    }
+
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            // Resume upload preview
+            const resumeUpload = document.getElementById('resumeUpload');
+            const resumePreview = document.getElementById('resumePreview');
+            const resumeFileName = document.getElementById('resumeFileName');
+            const btnRemoveResume = document.querySelector('.btn-remove-resume');
+
+            resumeUpload.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    resumeFileName.textContent = this.files[0].name;
+                    resumePreview.style.display = 'flex';
+                }
+            });
+
+            btnRemoveResume.addEventListener('click', function() {
+                resumeUpload.value = '';
+                resumePreview.style.display = 'none';
+            });
+
+            // Currently studying/working checkboxes
+            document.querySelectorAll('.currently-studying').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const endDateInput = this.closest('.form-group').querySelector('input[type="date"]');
+                    endDateInput.disabled = this.checked;
+                    if (this.checked) {
+                        endDateInput.value = '';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.currently-working').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const endDateInput = this.closest('.form-group').querySelector('input[type="date"]');
+                    endDateInput.disabled = this.checked;
+                    if (this.checked) {
+                        endDateInput.value = '';
+                    }
+                });
+            });
+
+            // Add more education
+            let educationCount = @Model.Education.Count;
+            document.getElementById('addEducation').addEventListener('click', function() {
+                const container = document.getElementById('educationContainer');
+                const newEntry = document.createElement('div');
+                newEntry.className = 'education-entry';
+                newEntry.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Education_${educationCount}__CollegeName">College/University*</label>
+                            <input type="text" id="Education_${educationCount}__CollegeName"
+                                   name="Education[${educationCount}].CollegeName" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Education[${educationCount}].CollegeName"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Education_${educationCount}__FieldOfStudy">Field of Study*</label>
+                            <input type="text" id="Education_${educationCount}__FieldOfStudy"
+                                   name="Education[${educationCount}].FieldOfStudy" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Education[${educationCount}].FieldOfStudy"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Education_${educationCount}__StartDate">Start Date*</label>
+                            <input type="date" id="Education_${educationCount}__StartDate"
+                                   name="Education[${educationCount}].StartDate" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Education[${educationCount}].StartDate"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Education_${educationCount}__EndDate">End Date</label>
+                            <input type="date" id="Education_${educationCount}__EndDate"
+                                   name="Education[${educationCount}].EndDate">
+                            <label class="checkbox-container">
+                                <input type="checkbox" class="currently-studying"> Currently studying
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="Education_${educationCount}__Gpa">GPA</label>
+                            <input type="number" id="Education_${educationCount}__Gpa"
+                                   name="Education[${educationCount}].Gpa" step="0.1" min="0" max="4">
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="Education_${educationCount}__Description">Description</label>
+                            <textarea id="Education_${educationCount}__Description"
+                                      name="Education[${educationCount}].Description" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-remove-education">Remove</button>
+                `;
+                container.appendChild(newEntry);
+
+                // Add event listener for the new checkbox
+                newEntry.querySelector('.currently-studying').addEventListener('change', function() {
+                    const endDateInput = this.closest('.form-group').querySelector('input[type="date"]');
+                    endDateInput.disabled = this.checked;
+                    if (this.checked) {
+                        endDateInput.value = '';
+                    }
+                });
+
+                // Add event listener for remove button
+                newEntry.querySelector('.btn-remove-education').addEventListener('click', function() {
+                    container.removeChild(newEntry);
+                });
+
+                educationCount++;
+            });
+
+            // Add more experience
+            let experienceCount = @Model.Experiences.Count;
+            document.getElementById('addExperience').addEventListener('click', function() {
+                const container = document.getElementById('experienceContainer');
+                const newEntry = document.createElement('div');
+                newEntry.className = 'experience-entry';
+                newEntry.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Experiences_${experienceCount}__Title">Job Title*</label>
+                            <input type="text" id="Experiences_${experienceCount}__Title"
+                                   name="Experiences[${experienceCount}].Title" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Experiences[${experienceCount}].Title"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Experiences_${experienceCount}__CompanyName">Company*</label>
+                            <input type="text" id="Experiences_${experienceCount}__CompanyName"
+                                   name="Experiences[${experienceCount}].CompanyName" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Experiences[${experienceCount}].CompanyName"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Experiences_${experienceCount}__Location">Location</label>
+                            <input type="text" id="Experiences_${experienceCount}__Location"
+                                   name="Experiences[${experienceCount}].Location">
+                        </div>
+                        <div class="form-group">
+                            <label for="Experiences_${experienceCount}__StartDate">Start Date*</label>
+                            <input type="date" id="Experiences_${experienceCount}__StartDate"
+                                   name="Experiences[${experienceCount}].StartDate" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Experiences[${experienceCount}].StartDate"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Experiences_${experienceCount}__EndDate">End Date</label>
+                            <input type="date" id="Experiences_${experienceCount}__EndDate"
+                                   name="Experiences[${experienceCount}].EndDate">
+                            <label class="checkbox-container">
+                                <input type="checkbox" class="currently-working"> Currently working here
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="Experiences_${experienceCount}__Description">Description</label>
+                            <textarea id="Experiences_${experienceCount}__Description"
+                                      name="Experiences[${experienceCount}].Description" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-remove-experience">Remove</button>
+                `;
+                container.appendChild(newEntry);
+
+                // Add event listener for the new checkbox
+                newEntry.querySelector('.currently-working').addEventListener('change', function() {
+                    const endDateInput = this.closest('.form-group').querySelector('input[type="date"]');
+                    endDateInput.disabled = this.checked;
+                    if (this.checked) {
+                        endDateInput.value = '';
+                    }
+                });
+
+                // Add event listener for remove button
+                newEntry.querySelector('.btn-remove-experience').addEventListener('click', function() {
+                    container.removeChild(newEntry);
+                });
+
+                experienceCount++;
+            });
+
+            // Add more skills
+            let skillCount = @Model.Skills.Count;
+            document.getElementById('addSkill').addEventListener('click', function() {
+                const container = document.getElementById('skillsContainer');
+                const newEntry = document.createElement('div');
+                newEntry.className = 'skill-entry';
+                newEntry.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Skills_${skillCount}__SkillName">Skill Name*</label>
+                            <input type="text" id="Skills_${skillCount}__SkillName"
+                                   name="Skills[${skillCount}].SkillName" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Skills[${skillCount}].SkillName"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Skills_${skillCount}__SkillLevel">Skill Level*</label>
+                            <select id="Skills_${skillCount}__SkillLevel"
+                                    name="Skills[${skillCount}].SkillLevel" required>
+                                <option value="">Select level</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Skills[${skillCount}].SkillLevel"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-remove-skill">Remove</button>
+                `;
+                container.appendChild(newEntry);
+
+                // Add event listener for remove button
+                newEntry.querySelector('.btn-remove-skill').addEventListener('click', function() {
+                    container.removeChild(newEntry);
+                });
+
+                skillCount++;
+            });
+
+            // Add more languages
+            let languageCount = @Model.Languages.Count;
+            document.getElementById('addLanguage').addEventListener('click', function() {
+                const container = document.getElementById('languagesContainer');
+                const newEntry = document.createElement('div');
+                newEntry.className = 'language-entry';
+                newEntry.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="Languages_${languageCount}__LanguageName">Language*</label>
+                            <input type="text" id="Languages_${languageCount}__LanguageName"
+                                   name="Languages[${languageCount}].LanguageName" required>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Languages[${languageCount}].LanguageName"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="Languages_${languageCount}__LanguageLevel">Proficiency Level*</label>
+                            <select id="Languages_${languageCount}__LanguageLevel"
+                                    name="Languages[${languageCount}].LanguageLevel" required>
+                                <option value="">Select level</option>
+                                <option value="Basic">Basic</option>
+                                <option value="Conversational">Conversational</option>
+                                <option value="Fluent">Fluent</option>
+                                <option value="Native">Native</option>
+                            </select>
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="Languages[${languageCount}].LanguageLevel"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-remove-language">Remove</button>
+                `;
+                container.appendChild(newEntry);
+
+                // Add event listener for remove button
+                newEntry.querySelector('.btn-remove-language').addEventListener('click', function() {
+                    container.removeChild(newEntry);
+                });
+
+                languageCount++;
+            });
+
+            // Remove buttons for existing entries
+            document.querySelectorAll('.btn-remove-education').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.education-entry').remove();
+                });
+            });
+
+            document.querySelectorAll('.btn-remove-experience').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.experience-entry').remove();
+                });
+            });
+
+            document.querySelectorAll('.btn-remove-skill').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.skill-entry').remove();
+                });
+            });
+
+            document.querySelectorAll('.btn-remove-language').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.language-entry').remove();
+                });
+            });
+        });
+    </script>
+}

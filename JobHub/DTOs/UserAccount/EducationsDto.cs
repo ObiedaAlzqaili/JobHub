@@ -1,6 +1,6 @@
 ﻿namespace JobHub.DTOs.UserAccount
 {
-    public class EducationDto
+    public class EducationsDto
     {
         public string CollegeName { get; set; }
         public string FieldOfStudy { get; set; }

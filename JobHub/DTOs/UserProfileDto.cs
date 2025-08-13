@@ -1,4 +1,5 @@
 ﻿using JobHub.DTOs.Job;
+using JobHub.DTOs.UserAccount;
 
 namespace JobHub.DTOs
 {
@@ -17,9 +18,9 @@ namespace JobHub.DTOs
         
 
       public List<ExperienceDto> Experiences { get; set; } = new List<ExperienceDto>();
-        public List<EducationDto> Educations { get; set; } = new List<EducationDto>();
+        public List<EducationsDto> Educations { get; set; } = new List<EducationsDto>();
         public List<JobPostDto> JobPosts { get; set; } = new List<JobPostDto>();
-        public List<SkillDto> Skills { get; set; } = new List<SkillDto>();
+        public List<SkillsDto> Skills { get; set; } = new List<SkillsDto>();
         public List<ResumeDto> Resumes { get; set; } = new List<ResumeDto>();
         public List<MatchResultDto> MatchResults { get; set; } = new List<MatchResultDto>();
 
