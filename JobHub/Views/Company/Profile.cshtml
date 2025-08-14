@@ -1,0 +1,39 @@
+﻿@model JobHub.DTOs.company.ProfileViewDto
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Company Profile</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img src="@($"data:image/png;base64,{Model.CompanyName}")"
+                             onerror="this.src='/images/default-company.png'"
+                             class="company-logo" />
+                    </div>
+                    <div class="col-md-8">
+                        <h3>@Model.CompanyName</h3>
+                        <p class="text-muted">Representative: @Model.FullName</p>
+                        <!-- Other company info -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Contact Info</h4>
+            </div>
+            <div class="card-body">
+                <dl>
+                    <dt>Email</dt>
+                    <dd>@Model.FullName</dd>
+                    <!-- Other contact info -->
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

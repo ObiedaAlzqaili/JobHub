@@ -1,0 +1,60 @@
+﻿@using Humanizer
+@model JobHub.DTOs.company.JobPostViewDto
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h4>Your Job Posts</h4>
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#createJobPostModal">
+            <i class="fas fa-plus"></i> New Job Post
+        </button>
+    </div>
+    <div class="card-body">
+        @if (!Model.JobPosts.Any())
+        {
+            <div class="alert alert-info">No job posts yet. Create your first one!</div>
+        }
+        else
+        {
+            foreach (var post in Model.JobPosts)
+            {
+                <div class="card mb-3 job-post-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5>@post.Title</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt"></i> @post.Location
+                                </p>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary">@post.JobApplications.Count Applicants</span>
+                            </div>
+                        </div>
+                        <p>@post.Description.Truncate(100)</p>
+                        <button class="btn btn-sm btn-outline-primary view-applicants"
+                                data-jobpost-id="@post.Id">
+                            View Applicants
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<partial name="_CreateJobPostModal" />
+<partial name="_ApplicantsModal" />
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.view-applicants').click(function() {
+                var jobPostId = $(this).data('jobpost-id');
+                $.get('/Company/GetApplicants?jobPostId=' + jobPostId, function(data) {
+                    $('#applicantsModal .modal-body').html(data);
+                    $('#applicantsModal').modal('show');
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - JobHub</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/company-dashboard.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <img src="~/images/logo.png" alt="JobHub" class="logo-img" />
+            </div>
+            <nav>
+                <a asp-controller="Company" asp-action="Profile" class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "Profile" ? "active" : "")">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a asp-controller="Company" asp-action="JobPosts" class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "JobPosts" ? "active" : "")">
+                    <i class="fas fa-briefcase"></i> Job Posts
+                </a>
+                <a href="/" class="sidebar-item">
+                    <i class="fas fa-home"></i> Back to JobHub
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>@ViewData["Title"]</h2>
+                <div class="user-info">
+                    <img src="@($"data:image/png;base64,{Model.CompanyLogoBase64}")"
+                         onerror="this.src='/images/default-company.png'"
+                         class="profile-picture" />
+                    <span>@Model.CompanyName</span>
+                </div>
+            </div>
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
