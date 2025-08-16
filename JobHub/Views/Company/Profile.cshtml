@@ -1,39 +1,68 @@
-﻿@model JobHub.DTOs.company.ProfileViewDto
+﻿@model JobHub.Models.Company
+@{
+    ViewData["Title"] = "Company Profile";
+}
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h4>Company Profile</h4>
+<div class="company-profile-container">
+    <div class="company-header bg-primary text-white p-4 rounded-top">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-building me-2"></i>@Model.CompanyName</h2>
+            <a asp-action="EditProfile" class="btn btn-light">
+                <i class="fas fa-edit me-1"></i> Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <div class="company-body bg-white p-4 rounded-bottom shadow">
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.CompanyLogoBase64))
+                {
+                    <img src="data:@Model.CompanyLogoType;base64,@Model.CompanyLogoBase64"
+                         class="img-fluid company-logo rounded border"
+                         alt="@Model.CompanyName Logo">
+                }
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <img src="@($"data:image/png;base64,{Model.CompanyName}")"
-                             onerror="this.src='/images/default-company.png'"
-                             class="company-logo" />
+
+            <div class="col-md-8">
+                <div class="company-details">
+                    <h4 class="text-primary mb-3">Company Information</h4>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 fw-bold">Description:</div>
+                        <div class="col-sm-8">@Model.CompanyDescription</div>
                     </div>
-                    <div class="col-md-8">
-                        <h3>@Model.CompanyName</h3>
-                        <p class="text-muted">Representative: @Model.FullName</p>
-                        <!-- Other company info -->
+
+                    <h4 class="text-primary mb-3">Contact Information</h4>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 fw-bold">Contact Person:</div>
+                        <div class="col-sm-8">@Model.FullName</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 fw-bold">Email:</div>
+                        <div class="col-sm-8">@Model.Email</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 fw-bold">Phone:</div>
+                        <div class="col-sm-8">@Model.PhoneNumber</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h4>Contact Info</h4>
-            </div>
-            <div class="card-body">
-                <dl>
-                    <dt>Email</dt>
-                    <dd>@Model.FullName</dd>
-                    <!-- Other contact info -->
-                </dl>
-            </div>
-        </div>
-    </div>
 </div>
+
+<style>
+    .company-profile-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+    }
+
+    .company-logo {
+        max-height: 250px;
+        object-fit: contain;
+    }
+
+    .company-header {
+        margin-bottom: -1px;
+    }
+</style>

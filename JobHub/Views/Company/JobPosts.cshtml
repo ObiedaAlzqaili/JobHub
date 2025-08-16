@@ -1,60 +1,112 @@
 ﻿@using Humanizer
-@model JobHub.DTOs.company.JobPostViewDto
+@model List<JobHub.Models.JobPost>
+@{
+    ViewData["Title"] = "Job Posts";
+}
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between">
-        <h4>Your Job Posts</h4>
-        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#createJobPostModal">
-            <i class="fas fa-plus"></i> New Job Post
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary"><i class="fas fa-briefcase me-2"></i>Your Job Posts</h1>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createJobModal">
+            <i class="fas fa-plus me-2"></i>Create New Job
         </button>
     </div>
-    <div class="card-body">
-        @if (!Model.JobPosts.Any())
+
+    <div class="job-posts-container">
+        @if (!Model.Any())
         {
-            <div class="alert alert-info">No job posts yet. Create your first one!</div>
+            <div class="alert alert-info text-center py-4">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <h3>No Job Posts Yet</h3>
+                <p class="mb-0">Click the button above to create your first job post</p>
+            </div>
         }
         else
         {
-            foreach (var post in Model.JobPosts)
-            {
-                <div class="card mb-3 job-post-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5>@post.Title</h5>
-                                <p class="text-muted mb-1">
-                                    <i class="fas fa-map-marker-alt"></i> @post.Location
+            <div class="row g-4">
+                @foreach (var job in Model)
+                {
+                    <div class="col-md-6">
+                        <div class="job-card card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h3 class="card-title text-primary">@job.Title</h3>
+                                    <span class="badge bg-info">@job.JobApplications.Count Applicants</span>
+                                </div>
+                                <p class="card-text text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt me-2"></i>@job.Location
                                 </p>
-                            </div>
-                            <div>
-                                <span class="badge bg-primary">@post.JobApplications.Count Applicants</span>
+                                <p class="card-text mb-3">@job.Description.Truncate(150)</p>
+                                <div class="job-meta d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        Posted: @job.PostedAt.ToString("MMM dd, yyyy")
+                                    </small>
+                                    <div class="job-actions">
+                                        <a href="#" class="btn btn-sm btn-outline-primary view-applicants"
+                                           data-id="@job.Id" data-bs-toggle="modal" data-bs-target="#applicantsModal">
+                                            View Applicants
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <p>@post.Description.Truncate(100)</p>
-                        <button class="btn btn-sm btn-outline-primary view-applicants"
-                                data-jobpost-id="@post.Id">
-                            View Applicants
-                        </button>
                     </div>
-                </div>
-            }
+                }
+            </div>
         }
     </div>
 </div>
 
-<partial name="_CreateJobPostModal" />
-<partial name="_ApplicantsModal" />
+<!-- Create Job Modal -->
+<div class="modal fade" id="createJobModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Create New Job Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("_CreateJobPost", new JobHub.DTOs.Job.JobPostDto())
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Applicants Modal -->
+<div class="modal fade" id="applicantsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Job Applicants</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="applicantsModalBody">
+                <!-- Content loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
             $('.view-applicants').click(function() {
-                var jobPostId = $(this).data('jobpost-id');
-                $.get('/Company/GetApplicants?jobPostId=' + jobPostId, function(data) {
-                    $('#applicantsModal .modal-body').html(data);
-                    $('#applicantsModal').modal('show');
-                });
+                var jobPostId = $(this).data('id');
+                $('#applicantsModalBody').load('@Url.Action("GetApplicants", "Company")?jobPostId=' + jobPostId);
             });
         });
     </script>
 }
+
+<style>
+    .job-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 10px;
+    }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+</style>

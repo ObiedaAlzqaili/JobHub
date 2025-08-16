@@ -1,31 +1,76 @@
-﻿@model JobHub.DTOs.company.ApplicationDto
+﻿@model List<JobHub.DTOs.Job.JobApplicationDto>
 
-<div class="modal fade" id="applicantsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Applicants for @Model.JobTitle</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                @if (!Model.Applicants.Any())
-                {
-                    <div class="alert alert-info">No applicants yet</div>
-                }
-                else
-                {
-                    foreach (var applicant in Model.Applicants)
-                    {
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5>@applicant.EndUser.FullName</h5>
-                                <p><i class="fas fa-envelope"></i> @applicant.Email</p>
-                                <!-- Other applicant info -->
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
+<div class="applicants-container">
+    <h4 class="mb-4">Applicants for: @ViewBag.JobTitle</h4>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4">
+            <i class="fas fa-user-slash fa-3x mb-3"></i>
+            <h4>No Applicants Yet</h4>
+            <p class="mb-0">This job post doesn't have any applicants yet</p>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Applied On</th>
+                        <th>CV</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var applicant in Model)
+                    {
+                        <tr>
+                            <td>@applicant.ApplicantName</td>
+                            <td>@applicant.ApplicantEmail</td>
+                            <td>@applicant.PhoneNumber</td>
+                            <td>@applicant.ApplicationDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(applicant.ResumeBase64))
+                                {
+                                    <a href="data:@applicant.ResumeFileType;base64,@applicant.ResumeBase64"
+                                       download="@applicant.ResumeFileName"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No CV</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-success">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>
+
+<style>
+    .applicants-container {
+        min-height: 300px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+</style>
