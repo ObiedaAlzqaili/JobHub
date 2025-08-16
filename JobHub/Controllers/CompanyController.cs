@@ -1,23 +1,29 @@
-﻿using JobHub.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using JobHub.Data;
+using JobHub.DTOs.Company;
 using JobHub.DTOs.Job;
+using JobHub.DTOs.UserAccount;
+using JobHub.Interfaces.RepositoriesInterfaces;
 using JobHub.Models;
+using JobHub.repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JobHub.Controllers
 {
-    [Authorize(Roles = "Company")]
+    //[Authorize(Roles = "Company")]
     public class CompanyController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IProfileReposotity _profileRepository;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(ApplicationDbContext context, IProfileReposotity profileRepository)
         {
             _context = context;
+            _profileRepository = profileRepository;
         }
 
         public async Task<IActionResult> Profile()
@@ -51,25 +57,32 @@ namespace JobHub.Controllers
                 .Where(j => j.CompanyId == companyId)
                 .Include(j => j.JobApplications)
                 .ToListAsync();
+            
 
             return View(jobPosts);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateJobPost(JobPost model)
+        public async Task<IActionResult> CreateJobPost(JobPostDto model)
         {
             if (ModelState.IsValid)
             {
                 var companyId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                
                 if (string.IsNullOrEmpty(companyId))
                 {
                     return NotFound();
                 }
+                var company = await _context.Companies.FindAsync(companyId);
 
                 var jobPost = new JobPost
                 {
                     Title = model.Title,
+                    ImageCompanyBase64 = company.PersonalImageBase64,
+                    ImageCompanyType = company.PersonalImageType,
+                    ImageCompanyName = company.PersonalImageName,
+                    companyName = company.CompanyName,
                     Description = model.Description,
                     RequiredSkills = model.RequiredSkills,
                     Location = model.Location,
@@ -111,7 +124,80 @@ namespace JobHub.Controllers
                 .Select(j => j.Title)
                 .FirstOrDefaultAsync();
 
-            return PartialView("_ApplicantsModal", applicants);
+            return PartialView("_GetApplicants", applicants);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCompanyProfile(CompanyDataDto companyProfileDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized();
+                }
+
+                // Handle company logo upload
+                if (companyProfileDto.CompanyLogo != null && companyProfileDto.CompanyLogo.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await companyProfileDto.CompanyLogo.CopyToAsync(ms);
+                        companyProfileDto.CompanyLogoBase64 = Convert.ToBase64String(ms.ToArray());
+                    }
+                    companyProfileDto.CompanyLogoType = companyProfileDto.CompanyLogo.ContentType;
+                    companyProfileDto.CompanyLogoName = companyProfileDto.CompanyLogo.FileName;
+                }
+
+                // Handle personal image upload
+                if (companyProfileDto.PersonalImage != null && companyProfileDto.PersonalImage.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await companyProfileDto.PersonalImage.CopyToAsync(ms);
+                        companyProfileDto.PersonalImageBase64 = Convert.ToBase64String(ms.ToArray());
+                    }
+                    companyProfileDto.PersonalImageType = companyProfileDto.PersonalImage.ContentType;
+                    companyProfileDto.PersonalImageName = companyProfileDto.PersonalImage.FileName;
+                }
+
+                var companyProfile = new Company
+                {
+                    Id = userId,
+                    FullName = companyProfileDto.FullName,
+                    PhoneNumber = companyProfileDto.PhoneNumber,
+                    Address = companyProfileDto.Address,
+                    DayOfBirth = companyProfileDto.DayOfBirth,
+                    Description = companyProfileDto.Description,
+                    PersonalImageBase64 = companyProfileDto.PersonalImageBase64,
+                    PersonalImageName = companyProfileDto.PersonalImageName,
+                    PersonalImageType = companyProfileDto.PersonalImageType,
+                    CompanyName = companyProfileDto.FullName,
+                    CompanyDescription = companyProfileDto.CompanyDescription,
+        
+                    JobPosts = new List<JobPost>() // Initialize empty job posts list
+                };
+
+                await _profileRepository.CreateCompanyAsync(companyProfile);
+                return RedirectToAction("Profile", "Company");
+            }
+
+            return View(companyProfileDto);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> CreateCompanyProfile()
+        {
+
+            var company = new CompanyDataDto();
+           
+
+            return View(company);
+        }
+
+
+
     }
 }

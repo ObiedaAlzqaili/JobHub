@@ -123,7 +123,7 @@ namespace JobHub.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new EndUser();
+                var user = new Company();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -159,8 +159,8 @@ namespace JobHub.Areas.Identity.Pages.Account
 
                         // Redirect to your desired controller/action
                         return RedirectToAction(
-                            "CreateProfile",  // Action name
-                            "EndUserProfile",               // Controller name
+                            "CreateCompanyProfile",  // Action name
+                            "Company",               // Controller name
                             new { id = userId }       // Optional route values
                         );
                     

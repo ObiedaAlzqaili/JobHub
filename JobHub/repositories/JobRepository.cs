@@ -41,7 +41,9 @@ namespace JobHub.repositories
                 };
 
                 _context.JobApplications.Add(jobApplication);
-                return await _context.SaveChangesAsync() > 0;
+                
+               await _context.SaveChangesAsync() ;
+                return true;
             }
             catch (Exception ex)
             {

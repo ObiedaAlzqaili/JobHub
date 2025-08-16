@@ -74,14 +74,45 @@ namespace JobHub.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult JobPostApplication(JobApplicationDto jobApplication)
+        public async Task<IActionResult> JobPostApplication(string FullName,string Email, string Phone , IFormFile Resume , int companyId)
         {
             if (ModelState.IsValid)
             {
+                string resumeBase64 = null;
+                string resumeType = null;
+                string resumeName = null;
+
+                if (Resume != null && Resume.Length > 0)
+                {
+                    var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    using (var ms = new MemoryStream())
+                    {
+                        await Resume.CopyToAsync(ms);
+                        resumeBase64 = Convert.ToBase64String(ms.ToArray());
+                    }
+                    resumeType = Resume.ContentType;
+                    resumeName = Resume.FileName;
+                }
+                   
+
+
+                var jobApplication = new JobApplicationDto
+                {
+                    JobPostId = companyId,
+                    EndUserId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+                    
+                    ApplicantName = FullName,
+                    ApplicantEmail = Email,
+                    PhoneNumber = Phone,
+                    ApplicationDate = DateTime.UtcNow,
+                    ResumeBase64 = resumeBase64,
+                    ResumeFileName = resumeName,
+                    ResumeFileType = resumeType
+                };
                 _jobRepository.CreateJobApplication(jobApplication);
                 return RedirectToAction("Index", "Home");
             }
-            return View(jobApplication);
+            return View();
         }
 
     } 

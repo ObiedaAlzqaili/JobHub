@@ -526,6 +526,7 @@
                 <div class="sidebar-card">
                     <h3>Quick Apply</h3>
                     <form class="quick-apply-form" asp-action="JobPostApplication" asp-controller="Job" method="post" enctype="multipart/form-data">
+                        <input name="companyId" value="@Model.Id" />
                         <div class="form-group">
                             <label for="full-name">Full Name</label>
                             <input type="text" id="full-name" name="FullName" placeholder="Your full name">

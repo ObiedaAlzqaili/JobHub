@@ -15,6 +15,40 @@ namespace JobHub.repositories
             _context = context;
         }
 
+        public async Task<bool> CreateCompanyAsync(Company updatedUser)
+        {
+            try
+            {
+                var existingUser = await _context.Companies
+                    .FirstOrDefaultAsync(u => u.Id == updatedUser.Id);
+
+
+                if (existingUser == null)
+                {
+                    return false; // user not found
+                }
+
+                // Update basic fields
+                existingUser.FullName = updatedUser.FullName;
+                existingUser.PhoneNumber = updatedUser.PhoneNumber;
+                existingUser.Address = updatedUser.Address;
+                existingUser.DayOfBirth = updatedUser.DayOfBirth;
+                existingUser.Description = updatedUser.Description;
+                existingUser.PersonalImageBase64 = updatedUser.PersonalImageBase64;
+                existingUser.PersonalImageType = updatedUser.PersonalImageType;
+                existingUser.PersonalImageName = updatedUser.PersonalImageName;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                
+                return false;
+            }
+
+        }
+
         public async Task<bool> CreateEndUserAsync(EndUser updatedUser)
         {
             try
@@ -87,6 +121,12 @@ namespace JobHub.repositories
 
             }
         }
+
+        public Task<bool> UpdateCompanyAsync(Company employer)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> UpdateEndUserAsync(EndUser endUser)
         {
             try

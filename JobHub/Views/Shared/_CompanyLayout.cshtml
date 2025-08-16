@@ -13,7 +13,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-brand">
-                <img src="~/images/logo.png" alt="JobHub" class="logo-img" />
+                <h1>Home</h1>
             </div>
             <nav>
                 <a asp-controller="Company" asp-action="Profile" class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "Profile" ? "active" : "")">
@@ -22,9 +22,11 @@
                 <a asp-controller="Company" asp-action="JobPosts" class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "JobPosts" ? "active" : "")">
                     <i class="fas fa-briefcase"></i> Job Posts
                 </a>
-                <a href="/" class="sidebar-item">
-                    <i class="fas fa-home"></i> Back to JobHub
-                </a>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </nav>
         </div>
 
@@ -32,12 +34,12 @@
         <div class="main-content">
             <div class="header">
                 <h2>@ViewData["Title"]</h2>
-                <div class="user-info">
+                @* <div class="user-info">
                     <img src="@($"data:image/png;base64,{Model.CompanyLogoBase64}")"
                          onerror="this.src='/images/default-company.png'"
                          class="profile-picture" />
                     <span>@Model.CompanyName</span>
-                </div>
+                </div> *@
             </div>
 
             @RenderBody()

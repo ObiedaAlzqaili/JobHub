@@ -51,6 +51,7 @@ namespace JobHub
 
 
 
+           
 
 
             builder.Services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -93,9 +94,9 @@ namespace JobHub
                 {
                     var userManager = context.RequestServices.GetRequiredService<UserManager<Person>>();
                     var user = await userManager.GetUserAsync(context.User);
-                    if (user != null && await userManager.IsInRoleAsync(user, "Admin"))
+                    if (user != null && await userManager.IsInRoleAsync(user, "Company"))
                     {
-                        context.Response.Redirect("/Admin/Index");
+                        context.Response.Redirect("/Company/Profile");
                         return;
                     }
 
