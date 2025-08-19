@@ -1,0 +1,521 @@
+﻿@model JobHub.DTOs.Ai.ResumeMatchDto
+@{
+    ViewData["Title"] = "Upload Resume";
+}
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --secondary-color: #2ecc71;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --gray-color: #95a5a6;
+        --light-gray: #e0e0e0;
+        --danger-color: #e74c3c;
+        --warning-color: #f39c12;
+        --success-color: #2ecc71;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .resume-upload-page {
+        padding: 40px 0;
+        background-color: #f5f7fa;
+        min-height: 100vh;
+    }
+
+    .btn-submit {
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 20px;
+    }
+
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-submit:disabled {
+            background-color: var(--gray-color);
+            cursor: not-allowed;
+        }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Upload Section */
+    .upload-section {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 40px;
+    }
+
+        .upload-section h1 {
+            font-size: 2.2rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+    .subtitle {
+        font-size: 1.1rem;
+        color: var(--gray-color);
+        margin-bottom: 30px;
+    }
+
+    .upload-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--box-shadow);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+
+    .upload-area {
+        border: 2px dashed var(--light-gray);
+        border-radius: 8px;
+        padding: 40px 20px;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+
+        .upload-area.highlight {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .upload-area i {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 3rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: var(--gray-color);
+            margin: 10px 0;
+        }
+
+    .btn-browse {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 10px;
+    }
+
+        .btn-browse:hover {
+            background-color: var(--primary-dark);
+        }
+
+    .file-types {
+        font-size: 0.9rem;
+        color: var(--gray-color);
+        margin-top: 15px;
+    }
+
+    .file-selected {
+        display: none;
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 5px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .file-selected .file-name {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+    .btn-clear {
+        background: none;
+        border: none;
+        color: var(--danger-color);
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .upload-error {
+        color: var(--danger-color);
+        margin-top: 15px;
+        padding: 10px;
+        background: rgba(231, 76, 60, 0.1);
+        border-radius: 5px;
+        display: none;
+    }
+
+    /* Processing Section */
+    .processing-section {
+        text-align: center;
+        padding: 30px;
+        display: none;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(52, 152, 219, 0.2);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s ease-in-out infinite;
+        margin: 0 auto 20px;
+    }
+
+    keyframes spin {
+        to
+
+    {
+        transform: rotate(360deg);
+    }
+
+    }
+
+    keyframes progress {
+        0%
+
+    {
+        width: 0;
+    }
+
+    50% {
+        width: 80%;
+    }
+
+    100% {
+        width: 100%;
+    }
+
+    }
+
+    .progress-container {
+        width: 80%;
+        max-width: 300px;
+        margin: 20px auto;
+    }
+
+    .progress-bar {
+        height: 6px;
+        background: var(--light-gray);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+
+        .progress-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--primary-color);
+            animation: progress 2s ease-in-out infinite;
+        }
+
+    keyframes progress {
+        0%
+
+    {
+        width: 0;
+    }
+
+    50% {
+        width: 80%;
+    }
+
+    100% {
+        width: 100%;
+    }
+
+    }
+
+    .progress-text {
+        font-size: 0.9rem;
+        color: var(--gray-color);
+    }
+
+    .processing-section h3 {
+        font-size: 1.3rem;
+        color: var(--dark-color);
+        margin-bottom: 10px;
+    }
+
+    .processing-section p {
+        color: var(--gray-color);
+    }
+
+    /* Tips Section */
+    .tips-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        text-align: left;
+        margin-top: 30px;
+    }
+
+        .tips-section h3 {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .tips-section ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .tips-section li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+
+        .tips-section i {
+            color: var(--success-color);
+            font-size: 1.1rem;
+        }
+
+    /* Responsive Design */
+    media (max-width: 768px) {
+        .upload-section h1
+
+    {
+        font-size: 1.8rem;
+    }
+
+    .upload-card {
+        padding: 25px 15px;
+    }
+
+    .upload-area {
+        padding: 30px 15px;
+    }
+
+        .upload-area i {
+            font-size: 2.5rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1.1rem;
+        }
+
+    }
+
+    media (max-width: 576px) {
+        .upload-section h1
+
+    {
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .tips-section ul {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>
+<div class="resume-upload-page">
+    <div class="container">
+        <div class="resume-upload-container">
+            <div class="upload-section">
+                <h1>Find Your Perfect Job Match</h1>
+                <h2 class="subtitle">Upload your resume and our AI will analyze it to find the best matching jobs for you</h2>
+
+                <form asp-action="Upload" method="post" enctype="multipart/form-data" class="upload-card">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="upload-area" id="dropZone">
+                        <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                        <h3>Drag & Drop Your Resume Here</h3>
+                        <p>or</p>
+                        <button type="button" class="btn-browse">Browse Files</button>
+                        <input type="file" name="file" id="resumeUpload" accept=".pdf,.doc,.docx,.txt" style="display: none;">
+                        <p class="file-types">Supported formats: PDF, DOC, DOCX, TXT (Max 5MB)</p>
+                        <div class="upload-error text-danger"></div>
+                    </div>
+
+                    <div class="file-selected" style="display: none;">
+                        <span class="file-name"></span>
+                        <button type="button" class="btn-clear">Clear</button>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <button type="submit" class="btn-submit">Analyze Resume</button>
+                    </div>
+
+                    <div class="processing-section" style="display: none;">
+                        <div class="spinner"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar"></div>
+                            <span class="progress-text">Analyzing your resume...</span>
+                        </div>
+                        <h3>Analyzing your resume...</h3>
+                        <p>Our AI is scanning your skills and experience to find the best matches</p>
+                    </div>
+                </form>
+
+                <div class="tips-section">
+                    <h3>Tips for Better Matches</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Ensure your resume includes relevant skills</li>
+                        <li><i class="fas fa-check-circle"></i> List your work experience with clear job titles</li>
+                        <li><i class="fas fa-check-circle"></i> Include education and certifications</li>
+                        <li><i class="fas fa-check-circle"></i> Keep your resume updated</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('resumeUpload');
+            const uploadArea = document.querySelector('.upload-area');
+            const processingSection = document.querySelector('.processing-section');
+            const fileSelected = document.querySelector('.file-selected');
+            const fileName = document.querySelector('.file-name');
+            const btnClear = document.querySelector('.btn-clear');
+            const errorDisplay = document.querySelector('.upload-error');
+            const form = document.querySelector('form');
+
+            // Click to browse files
+            dropZone.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // Browse button
+            document.querySelector('.btn-browse').addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileInput.click();
+            });
+
+            // File input change
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    handleFileSelection(this.files[0]);
+                }
+            });
+
+            // Clear selected file
+            btnClear.addEventListener('click', function(e) {
+                e.stopPropagation();
+                fileInput.value = '';
+                fileSelected.style.display = 'none';
+                hideError();
+            });
+
+            // Form submission - UPDATED
+            form.addEventListener('submit', function(e) {
+                if (fileInput.files.length === 0) {
+                    e.preventDefault();
+                    showError('Please select a file to upload');
+                    return;
+                }
+
+                // Show processing UI
+                uploadArea.style.display = 'none';
+                fileSelected.style.display = 'none';
+                processingSection.style.display = 'block';
+
+                // The form will now submit normally and show processing state
+            });
+
+            // Drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('highlight');
+            }
+
+            dropZone.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                handleFileSelection(file);
+            });
+
+            function showError(message) {
+                errorDisplay.textContent = message;
+                errorDisplay.style.display = 'block';
+            }
+
+            function hideError() {
+                errorDisplay.style.display = 'none';
+            }
+
+            function handleFileSelection(file) {
+                if (!validateFile(file)) return;
+                fileName.textContent = file.name;
+                fileSelected.style.display = 'flex';
+                hideError();
+            }
+
+            function validateFile(file) {
+                const validExtensions = ['.pdf', '.doc', '.docx', '.txt'];
+                const fileExt = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+                if (!validExtensions.includes(fileExt)) {
+                    showError('Please upload a valid file type (PDF, DOC, DOCX, or TXT)');
+                    return false;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('File size should not exceed 5MB');
+                    return false;
+                }
+
+                return true;
+            }
+        });
+    </script>
+}

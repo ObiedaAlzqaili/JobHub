@@ -1,8 +1,9 @@
-﻿using Microsoft.SemanticKernel;
+﻿using JobHub.Interfaces.AiInterfaces;
+using Microsoft.SemanticKernel;
 
 namespace JobHub.Services
 {
-    public class OpenAiKeywordExtraction
+    public class OpenAiKeywordExtraction : IOpenAiKeywordExtraction
     {
         private readonly Kernel _kernel;
 
@@ -14,24 +15,42 @@ namespace JobHub.Services
         public async Task<string> ExtractKeywordsAsync(string inputText)
         {
             string promptTemplate = @"
-You are an intelligent assistant that extracts key skills or keywords.
+You are an expert resume parser. Extract the most important keywords and skills from the following resume text.
+Focus on these categories:
 
-Extract 5 to 10 important and relevant keywords or skills from the following input. 
-Return only a comma-separated list of keywords.
+1. Technical Skills (programming languages, frameworks, tools)
+2. Professional Skills (management, communication, leadership)
+3. Certifications and Qualifications
+4. Job Titles and Roles
+5. Industry-specific terms
 
-Input:
-{{input}}
+Format requirements:
+- Return only a comma-separated list
+- No additional explanations or text
+- Minimum 5 keywords, maximum 10
+- Prioritize specific technical skills over generic terms
+- Include seniority level if mentioned (Junior, Mid-level, Senior)
 
-Keywords:";
+RESUME TEXT:
+{{$input}}
+
+KEYWORDS:";
 
             var prompt = _kernel.CreateFunctionFromPrompt(promptTemplate);
 
-            var result = await _kernel.InvokeAsync(prompt,new ()
-            {
-                ["input"] = inputText
-            });
+            var result = await prompt.InvokeAsync(_kernel, new() { ["input"] = inputText });
 
-            return result?.ToString() ?? string.Empty;
+            return result?.ToString()?.Trim() ?? string.Empty;
+        }
+
+        public async Task<string> ExtractKeywordsFromResumeAsync(string resumeText)
+        {
+            return await ExtractKeywordsAsync(resumeText);
+        }
+
+        public async Task<string> ExtractKeywordsFromJobPostAsync(string jobPostText)
+        {
+            return await ExtractKeywordsAsync(jobPostText);
         }
     }
 }

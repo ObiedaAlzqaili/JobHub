@@ -1,10 +1,12 @@
 
 using JobHub.Data;
+using JobHub.Interfaces.AiInterfaces;
 using JobHub.Interfaces.RepositoriesInterfaces;
 using JobHub.Interfaces.ServicesInterfaces;
 using JobHub.Models;
 using JobHub.repositories;
 using JobHub.Services;
+using JobHub.Services.FileHandler;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -30,28 +32,29 @@ namespace JobHub
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-
-            var key = builder.Configuration["OpenAi:key"];
-
-
-
-
-
-            builder.Services.AddSingleton<Kernel>(sp =>
-            {
+            builder.Services.AddSingleton<Kernel>(sp => {
                 var kernelBuilder = Kernel.CreateBuilder();
-                kernelBuilder.AddOpenAIChatCompletion("gpt-4", key);
+                kernelBuilder.AddOpenAIChatCompletion(
+                    modelId: "gpt-4", // or your model name
+                    apiKey: builder.Configuration["OpenAi:Key"]
+                );
                 return kernelBuilder.Build();
             });
 
-         
+
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddScoped<IJobRepository, JobRepository>();
             builder.Services.AddScoped<IProfileReposotity, ProfileRepository>();
+            builder.Services.AddSingleton<IFileStorageService, LocalFileStorageService>();
+            builder.Services.AddScoped<IOpenAiKeywordExtraction, OpenAiKeywordExtraction>();
+            builder.Services.AddScoped<IJobMatchingService, JobMatchingService>();
+            builder.Services.AddScoped<IResumeProcessingService, ResumeProcessingService>();
 
 
 
-           
+
+
+
 
 
             builder.Services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -106,6 +109,7 @@ namespace JobHub
 
                 await next();
             });
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

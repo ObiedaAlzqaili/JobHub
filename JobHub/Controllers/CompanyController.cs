@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobHub.Controllers
 {
-    //[Authorize(Roles = "Company")]
+    [Authorize]
     public class CompanyController : Controller
     {
         private readonly ApplicationDbContext _context;

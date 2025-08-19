@@ -30,9 +30,18 @@ namespace JobHub.Data
             base.OnModelCreating(modelBuilder);
 
         
+            modelBuilder.Entity<JobPost>()
+                .HasOne(j => j.Company)
+                .WithMany(c => c.JobPosts)
+                .HasForeignKey(j => j.CompanyId);
+
+            modelBuilder.Entity<JobApplication>()
+                .HasOne(ja => ja.JobPost)
+                .WithMany(j => j.JobApplications)
+                .HasForeignKey(ja => ja.JobPostId);
 
 
-            
+
             modelBuilder.Entity<JobApplication>()
             .HasKey(ja => new { ja.EndUserId, ja.JobPostId }); 
 
