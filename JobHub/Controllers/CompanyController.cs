@@ -5,9 +5,11 @@ using JobHub.Data;
 using JobHub.DTOs.Company;
 using JobHub.DTOs.Job;
 using JobHub.DTOs.UserAccount;
+using JobHub.Interfaces.AiInterfaces;
 using JobHub.Interfaces.RepositoriesInterfaces;
 using JobHub.Models;
 using JobHub.repositories;
+using JobHub.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +21,16 @@ namespace JobHub.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IProfileReposotity _profileRepository;
+        private readonly IOpenAiKeywordExtraction _keywordExtractor;
+        private readonly ILogger<CompanyController> _logger;
 
-        public CompanyController(ApplicationDbContext context, IProfileReposotity profileRepository)
+        public CompanyController(ApplicationDbContext context, IProfileReposotity profileRepository, IOpenAiKeywordExtraction keywordExtractor,
+    ILogger<CompanyController> logger)
         {
             _context = context;
             _profileRepository = profileRepository;
+            _keywordExtractor = keywordExtractor;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Profile()
@@ -69,12 +76,30 @@ namespace JobHub.Controllers
             if (ModelState.IsValid)
             {
                 var companyId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                
+
                 if (string.IsNullOrEmpty(companyId))
                 {
                     return NotFound();
                 }
+
                 var company = await _context.Companies.FindAsync(companyId);
+
+                // Combine relevant fields for AI keyword extraction
+                var textToAnalyze = $"{model.Title}\n{model.Description}\n{model.RequiredSkills}\n{model.Location}";
+
+                // Extract AI keywords
+                string aiKeywords;
+                try
+                {
+                    aiKeywords = await _keywordExtractor.ExtractKeywordsAsync(textToAnalyze);
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but continue with the job post creation
+                    // You might want to handle this differently in production
+                    _logger.LogError(ex, "Failed to extract AI keywords for job post");
+                    aiKeywords = ""; // Set empty or fallback keywords
+                }
 
                 var jobPost = new JobPost
                 {
@@ -87,7 +112,8 @@ namespace JobHub.Controllers
                     RequiredSkills = model.RequiredSkills,
                     Location = model.Location,
                     PostedAt = DateTime.Now,
-                    CompanyId = companyId
+                    CompanyId = companyId,
+                    AiKeyWords = aiKeywords // Add the AI-generated keywords
                 };
 
                 _context.JobPosts.Add(jobPost);

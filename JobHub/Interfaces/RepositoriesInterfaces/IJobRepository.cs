@@ -1,12 +1,13 @@
 ﻿using JobHub.DTOs;
 using JobHub.DTOs.Job;
+using JobHub.Models;
 
 namespace JobHub.Interfaces.RepositoriesInterfaces
 {
     public interface IJobRepository
     {
 
-        public Task  GetJobByIdAsync(int jobId);
+        public Task<JobPost>  GetJobByIdAsync(int jobId);
 
         public Task<IEnumerable<JobPostSearchDto>> GetFiveJobAsync();
 

@@ -76,6 +76,67 @@ namespace JobHub.Controllers
             return View(endUserProfileDto);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UpdateEndUserProfile()
+        {
+            var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var endUserProfile = await _profileRepository.GetEndUserByIdAsync(userId);
+            if (endUserProfile == null)
+            {
+                return NotFound("End user profile not found.");
+            }
+            var endUserProfileDto = new UserDataDto
+            {
+                FullName = endUserProfile.FullName,
+                PhoneNumber = endUserProfile.PhoneNumber,
+                Address = endUserProfile.Address,
+                DayOfBirth = endUserProfile.DayOfBirth,
+                Description = endUserProfile.Description,
+                PersonalImageBase64 = endUserProfile.PersonalImageBase64,
+                PersonalImageType = endUserProfile.PersonalImageType,
+                PersonalImageName = endUserProfile.PersonalImageName,
+                ResumeBase64 = endUserProfile.ResumeBase64,
+                ResumeType = endUserProfile.ResumeType,
+                ResumeName = endUserProfile.ResumeName,
+                HeadLine = endUserProfile.Headline,
+                Education = endUserProfile.EducationList.Select(e => new EducationsDto
+                {
+                    CollegeName = e.CollegeName,
+                    FieldOfStudy = e.FieldOfStudy,
+                    Description = e.Description,
+                    Gpa = e.Gpa,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate
+                }).ToList(),
+                Experiences = endUserProfile.ExperienceList.Select(e => new ExperinceDto
+                {
+                    CompanyName = e.CompanyName,
+                    Description = e.Description,
+                    Location = e.Location,
+                    Title = e.Title,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate
+                }).ToList(),
+                Skills = endUserProfile.Skills.Select(s => new SkillsDto
+                {
+                    SkillName = s.SkillName,
+                    SkillLevel = s.SkillLevel
+                }).ToList(),
+                Languages = endUserProfile.Languages.Select(l => new LanguageDto
+                {
+                    LanguageName = l.Name,
+                    LanguageLevel = l.Level
+                }).ToList()
+            };
+            return View(endUserProfileDto);
+
+        }
+
         [HttpPost]
         public IActionResult UpdateEndUserProfile(UserDataDto endUserProfileDto)
         {

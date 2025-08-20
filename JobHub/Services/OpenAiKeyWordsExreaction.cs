@@ -15,23 +15,25 @@ namespace JobHub.Services
         public async Task<string> ExtractKeywordsAsync(string inputText)
         {
             string promptTemplate = @"
-You are an expert resume parser. Extract the most important keywords and skills from the following resume text.
+You are an expert job analyzer. Extract the most important keywords and skills from the following job post.
 Focus on these categories:
 
-1. Technical Skills (programming languages, frameworks, tools)
-2. Professional Skills (management, communication, leadership)
-3. Certifications and Qualifications
-4. Job Titles and Roles
-5. Industry-specific terms
+1. Technical Skills (programming languages, frameworks, tools, technologies)
+2. Professional Skills (management, communication, leadership, soft skills)
+3. Job Titles and Roles
+4. Industry-specific terms
+5. Experience levels (Junior, Mid-level, Senior)
+6. Education requirements
+7. Certifications
 
 Format requirements:
 - Return only a comma-separated list
 - No additional explanations or text
-- Minimum 5 keywords, maximum 10
+- Minimum 5 keywords, maximum 15
 - Prioritize specific technical skills over generic terms
-- Include seniority level if mentioned (Junior, Mid-level, Senior)
+- Include seniority level if mentioned
 
-RESUME TEXT:
+JOB POST TEXT:
 {{$input}}
 
 KEYWORDS:";

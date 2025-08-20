@@ -1,18 +1,23 @@
-﻿using JobHub.DTOs.Job;
+﻿using DocumentFormat.OpenXml.EMMA;
+using JobHub.Data;
+using JobHub.DTOs.Job;
 using JobHub.Interfaces.RepositoriesInterfaces;
 using JobHub.Models;
 using JobHub.repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobHub.Controllers
 {
     public class JobController : Controller
     {
         private readonly IJobRepository _jobRepository;
+        private readonly ApplicationDbContext _context;
 
-        public JobController(IJobRepository jobRepository)
+        public JobController(IJobRepository jobRepository , ApplicationDbContext context)
         {
             _jobRepository = jobRepository;
+            _context = context;
         }
         public async Task<IActionResult> Index()
         {
@@ -26,36 +31,14 @@ namespace JobHub.Controllers
             return View(jobPosts);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> JobPostDetails(int Id)
-        //{
-        //    var jobPost =   _jobRepository.GetJobByIdAsync(Id);
-
-        //    return View(jobPost);
-        //}
         [HttpGet]
         public async Task<IActionResult> JobPostDetails(int Id)
         {
-            
+            var jobPost = await _jobRepository.GetJobByIdAsync(Id);
 
-            // Dummy data for demonstration purposes
-            var dummyJobPost = new JobPost
-            {
-                Id = Id,
-                Title = "Software Engineer",
-                PostedAt = DateTime.UtcNow.AddDays(-10),
-                companyName = "TechCorp Inc.",
-                Description = "anything",
-                RequiredSkills = "C#, ASP.NET, SQL",
-                ImageCompanyBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA\nAAAAFCAIAAAACNbyblAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAA\nCwQAAwAAAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4\n",
-                
-                Location = "New York, NY"
-            };
-
-          
-
-            return View(dummyJobPost);
+            return View(jobPost);
         }
+
         [HttpGet]
         public async Task<IActionResult> JobPostApplication(int Id)
         {
@@ -74,8 +57,25 @@ namespace JobHub.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> JobPostApplication(string FullName,string Email, string Phone , IFormFile Resume , int companyId)
+        public async Task<IActionResult> JobPostApplication(string FullName, string Email, string Phone, IFormFile Resume, int companyId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account"); // Redirect to login if not authenticated
+            }
+
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            // Check if user has already applied for this job
+            var existingApplication = await _context.JobApplications
+                .FirstOrDefaultAsync(ja => ja.JobPostId == companyId && ja.EndUserId == userId);
+
+            if (existingApplication != null)
+            {
+                TempData["ErrorMessage"] = "You have already applied for this position.";
+                return RedirectToAction("JobPostDetails", new { id = companyId });
+            }
+
             if (ModelState.IsValid)
             {
                 string resumeBase64 = null;
@@ -84,7 +84,6 @@ namespace JobHub.Controllers
 
                 if (Resume != null && Resume.Length > 0)
                 {
-                    var userId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                     using (var ms = new MemoryStream())
                     {
                         await Resume.CopyToAsync(ms);
@@ -93,14 +92,11 @@ namespace JobHub.Controllers
                     resumeType = Resume.ContentType;
                     resumeName = Resume.FileName;
                 }
-                   
-
 
                 var jobApplication = new JobApplicationDto
                 {
                     JobPostId = companyId,
-                    EndUserId = User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
-                    
+                    EndUserId = userId,
                     ApplicantName = FullName,
                     ApplicantEmail = Email,
                     PhoneNumber = Phone,
@@ -109,11 +105,24 @@ namespace JobHub.Controllers
                     ResumeFileName = resumeName,
                     ResumeFileType = resumeType
                 };
-                _jobRepository.CreateJobApplication(jobApplication);
-                return RedirectToAction("Index", "Home");
+
+                var result = await _jobRepository.CreateJobApplication(jobApplication);
+
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Application submitted successfully!";
+                    return RedirectToAction("JobPostDetails", new { id = companyId });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Failed to submit application. Please try again.");
+                }
             }
-            return View();
+
+            // If we got this far, something failed; redisplay form
+            return RedirectToAction("JobPostDetails", new { id = companyId });
         }
 
-    } 
+
+    }
 }

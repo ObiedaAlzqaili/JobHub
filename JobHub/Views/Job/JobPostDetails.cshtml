@@ -1,4 +1,18 @@
 ﻿@model JobHub.Models.JobPost
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <style>
     /* Base Styles */
     :root {
@@ -17,6 +31,25 @@
     .job-details-page {
         padding: 40px 0;
         background-color: #f5f7fa;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+    }
+
+    .alert-danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
     }
 
     .container {
@@ -442,9 +475,9 @@
                     <button class="btn-save-job">
                         <i class="far fa-bookmark"></i> Save Job
                     </button> *@
-                    <button class="btn-share">
+                    @* <button class="btn-share">
                         <i class="fas fa-share-alt"></i> Share
-                    </button>
+                    </button> *@
                 </div>
 
                 <div class="job-content">
@@ -526,7 +559,7 @@
                 <div class="sidebar-card">
                     <h3>Quick Apply</h3>
                     <form class="quick-apply-form" asp-action="JobPostApplication" asp-controller="Job" method="post" enctype="multipart/form-data">
-                        <input name="companyId" value="@Model.Id" />
+                        <input name="companyId" value="@Model.Id" hidden />
                         <div class="form-group">
                             <label for="full-name">Full Name</label>
                             <input type="text" id="full-name" name="FullName" placeholder="Your full name">
@@ -552,7 +585,7 @@
                     </form>
                 </div>
 
-                <div class="sidebar-card similar-jobs">
+                @* <div class="sidebar-card similar-jobs">
                     <h3>Similar Jobs</h3>
                     <div class="similar-job">
                         <h4>Senior Software Engineer</h4>
@@ -571,7 +604,7 @@
                         </div>
                     </div>
                     <a href="#" class="view-all-jobs">View all similar jobs →</a>
-                </div>
+                </div> *@
             </div>
         </div>
     </div>

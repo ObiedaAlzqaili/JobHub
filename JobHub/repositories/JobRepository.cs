@@ -26,6 +26,16 @@ namespace JobHub.repositories
                     throw new ArgumentNullException(nameof(application), "Application cannot be null");
                 }
 
+                // Check for existing application (redundant safety check)
+                var existingApp = await _context.JobApplications
+                    .FirstOrDefaultAsync(ja => ja.JobPostId == application.JobPostId &&
+                                              ja.EndUserId == application.EndUserId);
+
+                if (existingApp != null)
+                {
+                    return false; // Application already exists
+                }
+
                 var jobApplication = new JobApplication
                 {
                     JobPostId = application.JobPostId,
@@ -41,14 +51,13 @@ namespace JobHub.repositories
                 };
 
                 _context.JobApplications.Add(jobApplication);
-                
-               await _context.SaveChangesAsync() ;
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                // Log exception here
-                throw new Exception("An error occurred while creating the job application.", ex);
+                
+                return false;
             }
         }
 
@@ -146,6 +155,7 @@ namespace JobHub.repositories
                     {
                         Title = j.Title,
                         PostedAt = j.PostedAt,
+                        Id = j.Id,
                         CompanyName = j.Company.CompanyName,
                         Location = j.Location
                     })
@@ -158,9 +168,6 @@ namespace JobHub.repositories
             }
         }
 
-        Task IJobRepository.GetJobByIdAsync(int jobId)
-        {
-            return GetJobByIdAsync(jobId);
-        }
+       
     }
 }

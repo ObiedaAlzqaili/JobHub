@@ -35,7 +35,7 @@ namespace JobHub
             builder.Services.AddSingleton<Kernel>(sp => {
                 var kernelBuilder = Kernel.CreateBuilder();
                 kernelBuilder.AddOpenAIChatCompletion(
-                    modelId: "gpt-4", // or your model name
+                    modelId: "gpt-5", // or your model name
                     apiKey: builder.Configuration["OpenAi:Key"]
                 );
                 return kernelBuilder.Build();
